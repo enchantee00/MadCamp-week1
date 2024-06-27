@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class ProfileTab extends StatelessWidget {
+class GalleryTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Text(
-        'Profile Tab',
+        'Gallery',
         style: TextStyle(fontSize: 24),
       ),
     );
