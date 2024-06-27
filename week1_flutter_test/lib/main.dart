@@ -37,6 +37,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false, // debug 표시 없애기
       title: 'Tabbed App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
