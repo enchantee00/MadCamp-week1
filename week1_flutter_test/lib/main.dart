@@ -2,9 +2,35 @@ import 'package:flutter/material.dart';
 import 'contacts_tab.dart';
 import 'main_tab.dart';
 import 'gallery_tab.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+Future<void> requestPermission() async {
+  PermissionStatus status = await Permission.photos.request();
+  print("Initial permission status: $status");
+
+  if (status.isDenied) {
+    status = await Permission.photos.request();
+    print("Permission request status: $status");
+  }
+
+  if (status.isGranted) {
+    print("Permission granted");
+    // Show a dialog or navigate to the gallery if needed
+  } else if (status.isDenied) {
+    print("Permission denied");
+    // Show a dialog informing the user that permission was denied
+  } else if (status.isPermanentlyDenied) {
+    print("Permission permanently denied. Please enable it from settings.");
+    // Open app settings so the user can grant the permission
+    openAppSettings();
+  }
+}
 
 void main() {
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  requestPermission().then((_) {
+    runApp(MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -31,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
   static List<Widget> _widgetOptions = <Widget>[
     HomeTab(),
     SettingsTab(),
-    ProfileTab(),
+    GalleryTab(),
   ];
 
   void _onItemTapped(int index) {
@@ -60,8 +86,8 @@ class _MyHomePageState extends State<MyHomePage> {
             label: 'Settings',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
+            icon: Icon(Icons.crop_original),
+            label: 'Gallery',
           ),
         ],
         currentIndex: _selectedIndex,
