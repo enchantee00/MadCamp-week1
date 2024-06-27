@@ -55,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
 
   static List<Widget> _widgetOptions = <Widget>[
-    HomeTab(),
+    ContactsTab(),
     SettingsTab(),
     GalleryTab(),
   ];
@@ -78,8 +78,8 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+            icon: Icon(Icons.contacts),
+            label: 'Contacts',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
