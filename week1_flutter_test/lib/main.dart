@@ -3,6 +3,9 @@ import 'package:camera/camera.dart';
 import 'contacts_tab.dart';
 import 'camera_tab.dart';
 import 'gallery_tab.dart';
+import 'package:contacts_service/contacts_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 List<CameraDescription> cameras = [];
 
@@ -34,15 +37,58 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final GlobalKey<GalleryTabState> _galleryTabKey = GlobalKey<GalleryTabState>();
+  List<Contact> contacts = [];
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this, initialIndex: 1); // 초기 인덱스를 1로 설정하여 카메라 탭이 처음에 뜨도록 설정
+    _tabController = TabController(length: 3, vsync: this, initialIndex: 1);
+    _loadSavedContacts();
   }
 
   void _onPictureTaken(String path) {
     _galleryTabKey.currentState?.addImage(path); // 사진을 찍으면 갤러리 탭에 추가
+  }
+
+  Future<void> _loadSavedContacts() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? contactsJson = prefs.getString('contacts');
+    if (contactsJson != null) {
+      List<dynamic> contactsList = jsonDecode(contactsJson);
+      setState(() {
+        contacts = contactsList.map((contactMap) => Contact.fromMap(contactMap)).toList();
+      });
+    }
+  }
+
+  Future<void> _getAllContacts() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    Iterable<Contact> _contacts = await ContactsService.getContacts(withThumbnails: false);
+    setState(() {
+      contacts = _contacts.toList();
+      isLoading = false;
+    });
+    _saveContactsToPrefs();
+  }
+
+  Future<void> _saveContactsToPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String contactsJson = jsonEncode(contacts.map((contact) => contact.toMap()).toList());
+    prefs.setString('contacts', contactsJson);
+  }
+
+  Future<void> _updateContact(Contact updatedContact) async {
+    setState(() {
+      int index = contacts.indexWhere((contact) => contact.identifier == updatedContact.identifier);
+      if (index != -1) {
+        contacts[index] = updatedContact;
+      }
+    });
+    _saveContactsToPrefs();
   }
 
   @override
@@ -50,21 +96,31 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     return Scaffold(
       appBar: AppBar(
         title: Text('Camera App'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.sync),
+            onPressed: _getAllContacts,
+          ),
+        ],
       ),
       body: TabBarView(
         controller: _tabController,
         children: [
-          ContactsTab(), // 첫 번째 탭으로 설정
-          CameraTab(cameras: cameras, onPictureTaken: _onPictureTaken), // 두 번째 탭으로 설정 (가운데)
-          GalleryTab(key: _galleryTabKey), // 세 번째 탭으로 설정
+          ContactsTab(
+            contacts: contacts,
+            isLoading: isLoading,
+            updateContact: _updateContact,
+          ),
+          CameraTab(cameras: cameras, onPictureTaken: _onPictureTaken),
+          GalleryTab(key: _galleryTabKey),
         ],
       ),
       bottomNavigationBar: TabBar(
         controller: _tabController,
         tabs: [
-          Tab(icon: Icon(Icons.contacts), text: 'Contacts'), // 첫 번째 탭
-          Tab(icon: Icon(Icons.camera_alt), text: 'Camera'), // 두 번째 탭 (가운데)
-          Tab(icon: Icon(Icons.photo), text: 'Gallery'), // 세 번째 탭
+          Tab(icon: Icon(Icons.contacts), text: 'Contacts'),
+          Tab(icon: Icon(Icons.camera_alt), text: 'Camera'),
+          Tab(icon: Icon(Icons.photo), text: 'Gallery'),
         ],
         labelColor: Colors.blue,
         unselectedLabelColor: Colors.grey,
