@@ -7,8 +7,9 @@ import 'package:path/path.dart';
 
 class CameraTab extends StatefulWidget {
   final List<CameraDescription> cameras;
+  final Function(String) onPictureTaken; // 콜백 함수 추가
 
-  CameraTab({required this.cameras});
+  CameraTab({required this.cameras, required this.onPictureTaken});
 
   @override
   _CameraTabState createState() => _CameraTabState();
@@ -58,6 +59,8 @@ class _CameraTabState extends State<CameraTab> {
       setState(() {
         this.imagePath = imagePath;
       });
+
+      widget.onPictureTaken(imagePath); // 콜백 호출하여 갤러리 탭에 전달
     } catch (e) {
       print(e);
     }
