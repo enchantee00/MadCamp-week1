@@ -36,6 +36,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final GlobalKey<GalleryTabState> _galleryTabKey = GlobalKey<GalleryTabState>();
   List<Contact> contacts = [];
   bool isLoading = false;
 
@@ -44,6 +45,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     super.initState();
     _tabController = TabController(length: 3, vsync: this, initialIndex: 1);
     _loadSavedContacts();
+  }
+
+  void _onPictureTaken(String path) {
+    _galleryTabKey.currentState?.addImage(path); // 사진을 찍으면 갤러리 탭에 추가
   }
 
   Future<void> _loadSavedContacts() async {
@@ -106,8 +111,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             isLoading: isLoading,
             updateContact: _updateContact,
           ),
-          CameraTab(cameras: cameras),
-          GalleryTab(),
+          CameraTab(cameras: cameras, onPictureTaken: _onPictureTaken),
+          GalleryTab(key: _galleryTabKey),
         ],
       ),
       bottomNavigationBar: TabBar(
