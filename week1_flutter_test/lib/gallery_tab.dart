@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:intl/intl.dart';
+import 'image_page.dart';  // 추가
 
 class GalleryTab extends StatefulWidget {
   GalleryTab({Key? key}) : super(key: key);
@@ -82,7 +83,20 @@ class GalleryTabState extends State<GalleryTab> {
                 ),
                 itemCount: groupedImages[date]!.length,
                 itemBuilder: (context, index) {
-                  return Image.file(groupedImages[date]![index]);
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ImagePage(
+                            images: groupedImages[date]!,
+                            initialIndex: index,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Image.file(groupedImages[date]![index]),
+                  );
                 },
               ),
             ],
