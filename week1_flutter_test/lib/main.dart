@@ -6,6 +6,8 @@ import 'gallery_tab.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'dart:typed_data';
+import 'package:permission_handler/permission_handler.dart'; // 추가된 부분
 
 List<CameraDescription> cameras = [];
 
@@ -44,6 +46,14 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this, initialIndex: 1);
+    _requestPermissions();
+  }
+
+  Future<void> _requestPermissions() async {
+    var status = await Permission.contacts.status;
+    if (!status.isGranted) {
+      await Permission.contacts.request();
+    }
     _loadSavedContacts();
   }
 
@@ -57,7 +67,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     if (contactsJson != null) {
       List<dynamic> contactsList = jsonDecode(contactsJson);
       setState(() {
-        contacts = contactsList.map((contactMap) => Contact.fromMap(contactMap)).toList();
+        contacts = contactsList.map((contactMap) {
+          if (contactMap['avatar'] != null) {
+            contactMap['avatar'] = base64Decode(contactMap['avatar']);
+          }
+          return Contact.fromMap(contactMap);
+        }).toList();
       });
     }
   }
@@ -77,7 +92,13 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   Future<void> _saveContactsToPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String contactsJson = jsonEncode(contacts.map((contact) => contact.toMap()).toList());
+    String contactsJson = jsonEncode(contacts.map((contact) {
+      var contactMap = contact.toMap();
+      if (contactMap['avatar'] != null) {
+        contactMap['avatar'] = base64Encode(contactMap['avatar']);
+      }
+      return contactMap;
+    }).toList());
     prefs.setString('contacts', contactsJson);
   }
 
