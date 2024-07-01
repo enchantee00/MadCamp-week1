@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'contacts_tab.dart';
 import 'camera_tab.dart';
-import 'gallery_tab.dart';
+import 'gallery_tab.dart'; // GalleryTab import 추가
 import 'home_tab.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+import 'dart:typed_data';
+import 'package:permission_handler/permission_handler.dart';
+
 
 List<CameraDescription> cameras = [];
 

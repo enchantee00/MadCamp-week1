@@ -9,13 +9,14 @@ import requests
 from dotenv import load_dotenv
 
 app = Flask(__name__)
+# .env 파일 활성화
+load_dotenv()
 
 # 경로: 서비스 계정 JSON 키 파일을 다운로드한 위치
-SERVICE_ACCOUNT_FILE = os.getenv('SERVICE_ACCOUNT_FILE')
+# SERVICE_ACCOUNT_FILE = os.getenv('SERVICE_ACCOUNT_FILE')
 
 # Google Cloud Vision API 키 설정
-credentials = service_account.Credentials.from_service_account_file(
-    SERVICE_ACCOUNT_FILE)
+credentials = service_account.Credentials.from_service_account_file("proteinsequence-425706-3b26da6bd4ca.json")
 
 # OpenAI API 키 설정 (정확한 키를 입력하세요)
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
@@ -62,7 +63,7 @@ def process_text_with_openai(text):
         "messages": [
             {
                 "role": "user",
-                "content": f"Extract the student ID and name from this text: {text}"
+                "content": f"Extract the student ID and korean name from this text: {text}"
             }
         ],
         "max_tokens": 300
