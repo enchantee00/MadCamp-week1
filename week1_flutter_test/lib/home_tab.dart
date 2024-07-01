@@ -5,7 +5,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'home_SlideWidgets.dart';
 import 'edit_profile.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:flutter/services.dart';
 
 class HomeTab extends StatelessWidget {
   @override
@@ -39,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
     {
       'type': 'Link',
       'links': [
-        {'url': 'https://example.com', 'summary': 'Example Link'}
+        {'url': 'https://iam2.kaist.ac.kr/#/commonLogin?sso_type=S&param_id=aP1ZtAnnH5y', 'summary': 'KAIST Portal'}
       ],
       'color': Colors.red.value.toString(),
     },
@@ -47,6 +48,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final CarouselController _controller = CarouselController();
   int _cur = 0;
+  final GlobalKey _carouselKey = GlobalKey();
+  Size? widgetSize;
 
   void _editProfile() async {
     final updatedInfo = await Navigator.push(
@@ -92,9 +95,40 @@ class _MyHomePageState extends State<MyHomePage> {
               widgetDataList = newList;
             });
           },
+          widgetSize: widgetSize!,
         ),
       ),
     );
+  }
+
+  void _openEditWidgetPopup(BuildContext context, Map<String, dynamic> widgetData, double width, double height) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: EditWidgetPopup(
+            widgetData: widgetData,
+            width: width,
+            height: height,
+          ),
+        );
+      },
+    );
+  }
+
+  void _getWidgetSize() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final RenderBox renderBox = _carouselKey.currentContext?.findRenderObject() as RenderBox;
+      setState(() {
+        widgetSize = renderBox.size;
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getWidgetSize();
   }
 
   @override
@@ -108,15 +142,34 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text('내 정보'),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _navigateToWidgetsGridScreen(context);
-        },
-        child: Icon(Icons.add),
+      floatingActionButton: SpeedDial(
+        icon: Icons.add,
+        activeIcon: Icons.close,
+        children: [
+          SpeedDialChild(
+            child: Icon(Icons.settings),
+            label: 'Widget Settings',
+            onTap: () => _navigateToWidgetsGridScreen(context),
+          ),
+          SpeedDialChild(
+            child: Icon(Icons.add_a_photo),
+            label: 'Add to Gallery',
+            onTap: () {
+              // Add your camera functionality here
+            },
+          ),
+          SpeedDialChild(
+            child: Icon(Icons.camera_front),
+            label: 'Add to Contacts',
+            onTap: () {
+              // Add your camera functionality here
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 5.0, bottom: 5.0),
           child: Column(
             children: [
               Row(
@@ -168,33 +221,36 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ],
               ),
-              SizedBox(height: 20),
               CarouselSlider(
+                key: _carouselKey,
                 carouselController: _controller,
                 options: CarouselOptions(
-                    height: 400.0,
-                    enlargeCenterPage: true,
-                    autoPlay: false,
-                    aspectRatio: 16 / 9,
-                    autoPlayInterval: Duration(seconds: 3),
-                    autoPlayAnimationDuration: Duration(milliseconds: 800),
-                    autoPlayCurve: Curves.fastOutSlowIn,
-                    pauseAutoPlayOnTouch: true,
-                    enableInfiniteScroll: true,
-                    viewportFraction: 0.8,
-                    onPageChanged: ((index, reason) {
-                      setState(() {
-                        _cur = index;
-                      });
-                    })),
-                items: widgetDataList.map((widgetData) {
+                  height: MediaQuery.of(context).size.height * 0.48,
+                  enlargeCenterPage: true,
+                  autoPlay: false,
+                  aspectRatio: 16 / 9,
+                  autoPlayInterval: Duration(seconds: 3),
+                  autoPlayAnimationDuration: Duration(milliseconds: 800),
+                  autoPlayCurve: Curves.fastOutSlowIn,
+                  pauseAutoPlayOnTouch: true,
+                  enableInfiniteScroll: true,
+                  viewportFraction: 0.8,
+                  onPageChanged: ((index, reason) {
+                    setState(() {
+                      _cur = index;
+                    });
+                  }),
+                ),
+                items: widgetDataList.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final widgetData = entry.value;
                   final type = widgetData['type'];
                   final color = Color(int.parse(widgetData['color']));
-                  print(widgetData);
 
                   return Builder(
                     builder: (BuildContext context) {
                       return Container(
+                        key: ValueKey(index),
                         width: MediaQuery.of(context).size.width,
                         margin: EdgeInsets.symmetric(horizontal: 5.0),
                         child: type == 'Link'
@@ -227,7 +283,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         margin: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 4.0),
                         decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: const Color.fromARGB(255, 133, 133, 133).withOpacity(_cur == entry.key ? 0.9 : 0.4)),
+                            color: const Color.fromARGB(255, 133, 133, 133)
+                                .withOpacity(_cur == entry.key ? 0.9 : 0.4)),
                       ),
                     ),
                   );
@@ -250,17 +307,34 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: linkData.map((data) => Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: GestureDetector(
-            onTap: openLinks ? () => _launchURL(data['url']!) : null,
-            child: Text(
-              data['summary']!,
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.white,
-                decoration: TextDecoration.underline,
+          padding: const EdgeInsets.only(left: 25.0, top: 10.0,right: 15.0,bottom: 10.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: openLinks ? () => _launchURL(data['url']!) : null,
+                  child: Text(
+                    data['summary']!,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
               ),
-            ),
+              IconButton(
+                icon: Icon(Icons.copy, color: Colors.white),
+                onPressed: () {
+                  Clipboard.setData(ClipboardData(text: data['url']!)).then((value) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Link copied to clipboard')),
+                    );
+                  });
+                },
+              ),
+            ],
           ),
         )).toList(),
       ),

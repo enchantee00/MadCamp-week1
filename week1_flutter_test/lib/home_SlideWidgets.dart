@@ -2,12 +2,102 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:flutter/services.dart';
+
+class EditWidgetPopup extends StatelessWidget {
+  final Map<String, dynamic> widgetData;
+  final double width;
+  final double height;
+
+  EditWidgetPopup({
+    required this.widgetData,
+    required this.width,
+    required this.height,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final type = widgetData['type'];
+    final color = Color(int.parse(widgetData['color']));
+
+    return Container(
+      width: width,
+      height: height,
+      child: type == 'Link'
+          ? _createLinkWidget(
+        context,
+        List<Map<String, String>>.from(widgetData['links']),
+        color,
+      )
+          : _createImageWidget(widgetData['imagePath'], color),
+    );
+  }
+
+  Widget _createLinkWidget(BuildContext context, List<Map<String, String>> linkData, Color color) {
+    return Container(
+      margin: EdgeInsets.all(5.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        color: color,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: linkData.map((data) => Padding(
+          padding: const EdgeInsets.only(left: 25.0, top: 10.0, right: 15.0, bottom: 10.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  data['summary']!,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
+              IconButton(
+                icon: Icon(Icons.copy, color: Colors.white),
+                onPressed: () {
+                  Clipboard.setData(ClipboardData(text: data['url']!)).then((value) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Link copied to clipboard')),
+                    );
+                  });
+                },
+              ),
+            ],
+          ),
+        )).toList(),
+      ),
+    );
+  }
+
+  Widget _createImageWidget(String imagePath, Color color) {
+    return Container(
+      margin: EdgeInsets.all(5.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        color: color,
+      ),
+      child: Center(
+        child: Image.file(File(imagePath), fit: BoxFit.cover),
+      ),
+    );
+  }
+}
 
 class WidgetsGridScreen extends StatefulWidget {
   final List<Map<String, dynamic>> widgetDataList;
   final ValueChanged<List<Map<String, dynamic>>> onUpdate;
+  final Size widgetSize;
 
-  WidgetsGridScreen({required this.widgetDataList, required this.onUpdate});
+  WidgetsGridScreen({
+    required this.widgetDataList,
+    required this.onUpdate,
+    required this.widgetSize,
+  });
 
   @override
   _WidgetsGridScreenState createState() => _WidgetsGridScreenState();
@@ -15,15 +105,30 @@ class WidgetsGridScreen extends StatefulWidget {
 
 class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
   late List<Map<String, dynamic>> widgetDataList;
+  late final double widget_ratio;
+  late final double widget_width;
+  late final double widget_height;
   int? selectedIndex;
+
+  final List<Color> availableColors = [
+    Colors.purple,
+    Colors.blue,
+    Colors.red,
+  ];
 
   @override
   void initState() {
     super.initState();
     widgetDataList = List.from(widget.widgetDataList);
+    widget_width = widget.widgetSize.width;
+    widget_height = widget.widgetSize.height;
+    widget_ratio =  widget_width / widget_height;
+    print("$widget_width,$widget_height");
   }
 
-  void _addWidget() async {
+  void _addWidget(double r) async {
+    final double ratio = r; // width/height
+
     int? selectedWidgetNumber = await showDialog<int>(
       context: context,
       builder: (BuildContext context) {
@@ -41,13 +146,13 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                       onTap: () {
                         Navigator.of(context).pop(1);
                       },
-                      child: _createSampleLinkWidgetPreview(),
+                      child: _createSampleLinkWidgetPreview(ratio),
                     ),
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).pop(2);
                       },
-                      child: _createSampleWidget2Preview(),
+                      child: _createSampleWidget2Preview(ratio),
                     ),
                   ],
                 ),
@@ -80,118 +185,106 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
               title: Text('Link Widget Settings'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextField(
-                    controller: textController,
-                    decoration: InputDecoration(
-                      hintText: 'Enter URL',
-                    ),
+              content: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom,
                   ),
-                  SizedBox(height: 16),
-                  TextField(
-                    controller: summaryController,
-                    decoration: InputDecoration(
-                      hintText: 'Enter summary',
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      final Uri? uri = Uri.tryParse(textController.text);
-                      if (uri != null && uri.hasAbsolutePath && summaryController.text.isNotEmpty) {
-                        setState(() {
-                          linkData.add({
-                            'url': textController.text,
-                            'summary': summaryController.text
-                          });
-                          textController.clear();
-                          summaryController.clear();
-                        });
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Please enter a valid URL and summary'))
-                        );
-                      }
-                    },
-                    child: Text('Add Link'),
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    'Entered Links:',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    width: 200,
-                    height: 45,
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: linkData.length,
-                      itemBuilder: (context, index) {
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Text(linkData[index]['summary']!),
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.delete),
-                              onPressed: () {
-                                setState(() {
-                                  linkData.removeAt(index);
-                                });
-                              },
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            selectedColor = Colors.orange;
-                          });
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.orange,
-                            border: selectedColor == Colors.orange
-                                ? Border.all(color: Colors.black, width: 3.0)
-                                : null,
-                          ),
-                          width: 50,
-                          height: 50,
+                      TextField(
+                        controller: textController,
+                        decoration: InputDecoration(
+                          hintText: 'Enter URL',
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            selectedColor = Colors.blue;
-                          });
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.blue,
-                            border: selectedColor == Colors.blue
-                                ? Border.all(color: Colors.black, width: 3.0)
-                                : null,
-                          ),
-                          width: 50,
-                          height: 50,
+                      SizedBox(height: 16),
+                      TextField(
+                        controller: summaryController,
+                        decoration: InputDecoration(
+                          hintText: 'Enter summary',
                         ),
+                      ),
+                      SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () {
+                          final Uri? uri = Uri.tryParse(textController.text);
+                          if (uri != null && uri.hasAbsolutePath && summaryController.text.isNotEmpty) {
+                            setState(() {
+                              linkData.add({
+                                'url': textController.text,
+                                'summary': summaryController.text
+                              });
+                              textController.clear();
+                              summaryController.clear();
+                            });
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Please enter a valid URL and summary')));
+                          }
+                        },
+                        child: Text('Add Link'),
+                      ),
+                      SizedBox(height: 20),
+                      Text(
+                        'Entered Links:',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        width: 200,
+                        height: 45,
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: linkData.length,
+                          itemBuilder: (context, index) {
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(linkData[index]['summary']!),
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.delete),
+                                  onPressed: () {
+                                    setState(() {
+                                      linkData.removeAt(index);
+                                    });
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: availableColors.map((color) {
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedColor = color;
+                              });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: color,
+                                border: selectedColor == color
+                                    ? Border.all(color: Colors.black, width: 3.0)
+                                    : null,
+                              ),
+                              width: 50,
+                              height: 50,
+                            ),
+                          );
+                        }).toList(),
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
               actions: [
                 TextButton(
@@ -237,68 +330,57 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
               title: Text('Image Widget Settings'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () async {
-                      final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
-                      if (pickedFile != null) {
-                        setState(() {
-                          imageFile = pickedFile;
-                        });
-                      }
-                    },
-                    child: Text('Pick Image'),
+              content: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom,
                   ),
-                  if (imageFile != null) ...[
-                    SizedBox(height: 16),
-                    Image.file(File(imageFile!.path), height: 100),
-                  ],
-                  SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            selectedColor = Colors.orange;
-                          });
+                      ElevatedButton(
+                        onPressed: () async {
+                          final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
+                          if (pickedFile != null) {
+                            setState(() {
+                              imageFile = pickedFile;
+                            });
+                          }
                         },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.orange,
-                            border: selectedColor == Colors.orange
-                                ? Border.all(color: Colors.black, width: 3.0)
-                                : null,
-                          ),
-                          width: 50,
-                          height: 50,
-                        ),
+                        child: Text('Pick Image'),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            selectedColor = Colors.blue;
-                          });
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.blue,
-                            border: selectedColor == Colors.blue
-                                ? Border.all(color: Colors.black, width: 3.0)
-                                : null,
-                          ),
-                          width: 50,
-                          height: 50,
-                        ),
+                      if (imageFile != null) ...[
+                        SizedBox(height: 16),
+                        Image.file(File(imageFile!.path), height: 100),
+                      ],
+                      SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: availableColors.map((color) {
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedColor = color;
+                              });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: color,
+                                border: selectedColor == color
+                                    ? Border.all(color: Colors.black, width: 3.0)
+                                    : null,
+                              ),
+                              width: 50,
+                              height: 50,
+                            ),
+                          );
+                        }).toList(),
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
               actions: [
                 TextButton(
@@ -308,7 +390,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                   child: Text('Cancel'),
                 ),
                 TextButton(
-                  onPressed: () {
+                  onPressed: imageFile == null ? null : () {
                     Navigator.of(context).pop(true);
                   },
                   child: Text('Save'),
@@ -372,7 +454,6 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
     );
   }
 
-
   void _deleteWidget() {
     setState(() {
       if (selectedIndex != null && selectedIndex! < widgetDataList.length) {
@@ -383,37 +464,96 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
     });
   }
 
-  Widget _createSampleLinkWidgetPreview() {
-    return Container(
-      width: 50,
-      height: 50,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-        color: Colors.orange,
-      ),
-      child: Center(
-        child: Text(
-          'W1',
-          style: TextStyle(fontSize: 12, color: Colors.white),
+  Widget _createSampleLinkWidgetPreview(double r) {
+    //width/height
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Container(
+          width: 180 * r * 0.8, // Carousel slider에서도 ratio 0.8 적용됨
+          height: 180,
+          margin: EdgeInsets.all(2.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8.0),
+            color: Colors.orange,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0, top: 0, right: 0, bottom: 10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'sample1',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.white,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.copy, color: Colors.white),
+                      iconSize: 10,
+                      onPressed: null,
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0, top: 0, right: 0, bottom: 10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'sample2',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.white,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.copy, color: Colors.white),
+                      iconSize: 10,
+                      onPressed: null,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
+        SizedBox(height: 5), // Space between preview and label
+        Text("Links", style: TextStyle(fontSize: 14)),
+      ],
     );
   }
 
-  Widget _createSampleWidget2Preview() {
-    return Container(
-      width: 50,
-      height: 50,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-        color: Colors.blue,
-      ),
-      child: Center(
-        child: Text(
-          'W2',
-          style: TextStyle(fontSize: 12, color: Colors.white),
+  Widget _createSampleWidget2Preview(double r) {
+    return Column(
+      children: [
+        Container(
+          width: 180 * r * 0.8, // Carousel slider에서도 ratio 0.8 적용됨
+          height: 180,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8.0),
+            color: Colors.blue,
+          ),
+          child: Center(
+            child: Image.asset("photo/bird.JPG"),
+          ),
         ),
-      ),
+        SizedBox(height: 5), // Space between preview and label
+        Text("Image", style: TextStyle(fontSize: 14)),
+      ],
     );
   }
 
@@ -425,7 +565,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
         actions: [
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: _addWidget,
+            onPressed: () => _addWidget(widget_ratio),
           ),
           IconButton(
             icon: Icon(Icons.remove),
@@ -453,6 +593,20 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                 setState(() {
                   selectedIndex = index;
                 });
+              },
+              onLongPress: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      content: EditWidgetPopup(
+                        widgetData: widgetData,
+                        width: widget.widgetSize.width,
+                        height: widget.widgetSize.height,
+                      ),
+                    );
+                  },
+                );
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -488,6 +642,7 @@ void main() {
       onUpdate: (widgetDataList) {
         // Update the widget data list
       },
+      widgetSize: Size(200, 200), // Provide an initial size
     ),
   ));
 }
