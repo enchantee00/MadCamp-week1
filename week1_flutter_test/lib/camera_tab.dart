@@ -45,7 +45,7 @@ class _CameraTabState extends State<CameraTab> {
     super.dispose();
   }
 
-  Future<void> _takePicture() async {
+  Future<void> _takePicture(BuildContext context) async {
     try {
       await initializeControllerFuture;
       final Directory appDir = await getApplicationDocumentsDirectory();
@@ -53,7 +53,7 @@ class _CameraTabState extends State<CameraTab> {
       await Directory(imageDir).create(recursive: true);
       final String imagePath = join(
         imageDir,
-        '${DateTime.now().millisecondsSinceEpoch}.png',
+        '${DateTime.now().millisecondsSinceEpoch}.jpg', // 확장자를 .jpg로 명시적으로 설정
       );
 
       XFile picture = await controller!.takePicture();
@@ -63,10 +63,14 @@ class _CameraTabState extends State<CameraTab> {
         this.imagePath = imagePath;
       });
 
+      _showLoadingDialog(context);  // 로딩 중임을 표시하는 팝업 띄우기
+
       // 사진을 Flask 서버로 전송하여 OCR 및 텍스트 처리
       final processedText = await _processImage(imagePath);
+      Navigator.of(context).pop();  // 로딩 팝업 닫기
+
       if (processedText != null) {
-        print('Processed text: $processedText');
+        _showOCRResultDialog(context, processedText);
       }
 
       widget.onPictureTaken(imagePath);
@@ -75,21 +79,29 @@ class _CameraTabState extends State<CameraTab> {
     }
   }
 
-  Future<void> _pickImage() async {
-    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+  Future<void> _pickImage(BuildContext context) async {
+    try {
+      final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
-    if (pickedFile != null) {
-      setState(() {
-        imagePath = pickedFile.path;
-      });
+      if (pickedFile != null) {
+        setState(() {
+          imagePath = pickedFile.path;
+        });
 
-      // 선택한 이미지를 Flask 서버로 전송하여 OCR 및 텍스트 처리
-      final processedText = await _processImage(pickedFile.path);
-      if (processedText != null) {
-        print('Processed text: $processedText');
+        _showLoadingDialog(context);  // 로딩 중임을 표시하는 팝업 띄우기
+
+        // 선택한 이미지를 Flask 서버로 전송하여 OCR 및 텍스트 처리
+        final processedText = await _processImage(pickedFile.path);
+        Navigator.of(context).pop();  // 로딩 팝업 닫기
+
+        if (processedText != null) {
+          _showOCRResultDialog(context, processedText);
+        }
+      } else {
+        print('No image selected.');
       }
-    } else {
-      print('No image selected.');
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -113,6 +125,55 @@ class _CameraTabState extends State<CameraTab> {
     }
   }
 
+  void _showLoadingDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,  // 팝업 바깥을 클릭해도 팝업이 닫히지 않도록 설정
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Row(
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(width: 20),
+              Text("로딩 중..."),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showOCRResultDialog(BuildContext context, String ocrText) {
+    // OCR 결과에서 이름과 학번 추출
+    final studentId = RegExp(r'Student ID: (\d+)').firstMatch(ocrText)?.group(1) ?? '알 수 없음';
+    final name = RegExp(r'Korean Name: ([^\n]+)').firstMatch(ocrText)?.group(1) ?? '알 수 없음';
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("OCR 결과 확인"),
+          content: Text("이름: $name\n학번: $studentId\n\n정보가 맞습니까?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("취소"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                // 여기에서 추가적인 작업을 수행할 수 있습니다.
+              },
+              child: Text("확인"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,11 +183,11 @@ class _CameraTabState extends State<CameraTab> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: _initializeCamera,
+              onPressed: () => _initializeCamera(),
               child: Text('Open Camera'),
             ),
             ElevatedButton(
-              onPressed: _pickImage,
+              onPressed: () => _pickImage(context),
               child: Text('Pick Image from Gallery'),
             ),
           ],
@@ -153,7 +214,7 @@ class _CameraTabState extends State<CameraTab> {
                   bottom: 20,
                   left: MediaQuery.of(context).size.width / 2 - 30,
                   child: ElevatedButton(
-                    onPressed: _takePicture,
+                    onPressed: () => _takePicture(context),
                     child: Icon(Icons.camera_alt),
                     style: ElevatedButton.styleFrom(
                       shape: CircleBorder(),

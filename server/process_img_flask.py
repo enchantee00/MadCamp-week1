@@ -9,16 +9,18 @@ import requests
 from dotenv import load_dotenv
 
 app = Flask(__name__)
+# .env 파일 활성화
+load_dotenv()
 
 # 경로: 서비스 계정 JSON 키 파일을 다운로드한 위치
-SERVICE_ACCOUNT_FILE = os.getenv('SERVICE_ACCOUNT_FILE')
+# SERVICE_ACCOUNT_FILE = os.getenv('SERVICE_ACCOUNT_FILE')
 
 # Google Cloud Vision API 키 설정
-credentials = service_account.Credentials.from_service_account_file(
-    SERVICE_ACCOUNT_FILE)
+credentials = service_account.Credentials.from_service_account_file("proteinsequence-425706-3b26da6bd4ca.json")
 
 # OpenAI API 키 설정 (정확한 키를 입력하세요)
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+# OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+OPENAI_API_KEY = "sk-proj-fTACOVg8ZnWfs1wXZ5LxT3BlbkFJ7Mj9TE6XYm1lRXCvVr95"
 
 def detect_text(image_base64):
     """Google Cloud Vision API를 사용하여 텍스트를 감지"""
@@ -54,7 +56,7 @@ def process_text_with_openai(text):
     """OpenAI API를 사용하여 텍스트를 처리"""
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {OPENAI_API_KEY}"
+        "Authorization": f"Bearer sk-proj-fTACOVg8ZnWfs1wXZ5LxT3BlbkFJ7Mj9TE6XYm1lRXCvVr95"
     }
     
     payload = {
@@ -62,7 +64,7 @@ def process_text_with_openai(text):
         "messages": [
             {
                 "role": "user",
-                "content": f"Extract the student ID and name from this text: {text}"
+                "content": f"Extract the student ID and korean name from this text: {text}"
             }
         ],
         "max_tokens": 300
