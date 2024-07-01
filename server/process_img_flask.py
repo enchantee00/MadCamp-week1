@@ -19,8 +19,7 @@ load_dotenv()
 credentials = service_account.Credentials.from_service_account_file("proteinsequence-425706-3b26da6bd4ca.json")
 
 # OpenAI API 키 설정 (정확한 키를 입력하세요)
-# OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-OPENAI_API_KEY = "sk-proj-fTACOVg8ZnWfs1wXZ5LxT3BlbkFJ7Mj9TE6XYm1lRXCvVr95"
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
 def detect_text(image_base64):
     """Google Cloud Vision API를 사용하여 텍스트를 감지"""
