@@ -3,6 +3,7 @@ import 'package:camera/camera.dart';
 import 'contacts_tab.dart';
 import 'camera_tab.dart';
 import 'gallery_tab.dart';
+import 'home_tab.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: HomePage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -134,6 +136,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           ),
           CameraTab(cameras: cameras, onPictureTaken: _onPictureTaken),
           GalleryTab(key: _galleryTabKey),
+          HomeTab(),
         ],
       ),
       bottomNavigationBar: TabBar(
@@ -142,6 +145,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           Tab(icon: Icon(Icons.contacts), text: 'Contacts'),
           Tab(icon: Icon(Icons.camera_alt), text: 'Camera'),
           Tab(icon: Icon(Icons.photo), text: 'Gallery'),
+          Tab(icon: Icon(Icons.home), text: 'home'),
         ],
         labelColor: Colors.blue,
         unselectedLabelColor: Colors.grey,
