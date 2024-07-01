@@ -4,11 +4,11 @@ import 'contacts_tab.dart';
 import 'camera_tab.dart';
 import 'gallery_tab.dart'; // GalleryTab import 추가
 import 'home_tab.dart';
-import 'package:contacts_service/contacts_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:permission_handler/permission_handler.dart';
+
 
 List<CameraDescription> cameras = [];
 
@@ -40,77 +40,15 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final GlobalKey<GalleryTabState> _galleryTabKey = GlobalKey<GalleryTabState>();
-  List<Contact> contacts = [];
-  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this, initialIndex: 0);
-    _requestPermissions();
-  }
-
-  Future<void> _requestPermissions() async {
-    var status = await Permission.contacts.status;
-    if (!status.isGranted) {
-      await Permission.contacts.request();
-    }
-    _loadSavedContacts();
+    _tabController = TabController(length: 4, vsync: this, initialIndex: 1);
   }
 
   void _onPictureTaken(String path) {
     _galleryTabKey.currentState?.addImage(path); // 사진을 찍으면 갤러리 탭에 추가
-  }
-
-  Future<void> _loadSavedContacts() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? contactsJson = prefs.getString('contacts');
-    if (contactsJson != null) {
-      List<dynamic> contactsList = jsonDecode(contactsJson);
-      setState(() {
-        contacts = contactsList.map((contactMap) {
-          if (contactMap['avatar'] != null) {
-            contactMap['avatar'] = base64Decode(contactMap['avatar']);
-          }
-          return Contact.fromMap(contactMap);
-        }).toList();
-      });
-    }
-  }
-
-  Future<void> _getAllContacts() async {
-    setState(() {
-      isLoading = true;
-    });
-
-    Iterable<Contact> _contacts = await ContactsService.getContacts(withThumbnails: false);
-    setState(() {
-      contacts = _contacts.toList();
-      isLoading = false;
-    });
-    _saveContactsToPrefs();
-  }
-
-  Future<void> _saveContactsToPrefs() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String contactsJson = jsonEncode(contacts.map((contact) {
-      var contactMap = contact.toMap();
-      if (contactMap['avatar'] != null) {
-        contactMap['avatar'] = base64Encode(contactMap['avatar']);
-      }
-      return contactMap;
-    }).toList());
-    prefs.setString('contacts', contactsJson);
-  }
-
-  Future<void> _updateContact(Contact updatedContact) async {
-    setState(() {
-      int index = contacts.indexWhere((contact) => contact.identifier == updatedContact.identifier);
-      if (index != -1) {
-        contacts[index] = updatedContact;
-      }
-    });
-    _saveContactsToPrefs();
   }
 
   @override
@@ -118,21 +56,11 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     return Scaffold(
       appBar: AppBar(
         title: Text('Camera App'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.sync),
-            onPressed: _getAllContacts,
-          ),
-        ],
       ),
       body: TabBarView(
         controller: _tabController,
         children: [
-          ContactsTab(
-            contacts: contacts,
-            isLoading: isLoading,
-            updateContact: _updateContact,
-          ),
+          ContactsTab(),
           CameraTab(cameras: cameras, onPictureTaken: _onPictureTaken),
           GalleryTab(key: _galleryTabKey),
           HomeTab(),
