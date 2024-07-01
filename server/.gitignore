@@ -1,0 +1,5 @@
+# Environments
+.env
+.venv
+venv/
+proteinsequence-425706-3b26da6bd4ca.json
