@@ -3,6 +3,7 @@ import 'package:camera/camera.dart';
 import 'contacts_tab.dart';
 import 'camera_tab.dart';
 import 'gallery_tab.dart';
+import 'home_tab.dart';
 
 List<CameraDescription> cameras = [];
 
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: HomePage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -29,7 +31,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3, // 탭의 수를 3으로 설정합니다.
+      length: 4, // 탭의 수를 3으로 설정합니다.
       child: Scaffold(
         appBar: AppBar(
           title: Text('Camera App'),
@@ -39,6 +41,7 @@ class HomePage extends StatelessWidget {
             ContactsTab(),
             CameraTab(cameras: cameras),
             GalleryTab(),
+            HomeTab(),
           ],
         ),
         bottomNavigationBar: TabBar(
@@ -46,6 +49,7 @@ class HomePage extends StatelessWidget {
             Tab(icon: Icon(Icons.contacts), text: 'Contacts'),
             Tab(icon: Icon(Icons.camera_alt), text: 'Camera'),
             Tab(icon: Icon(Icons.photo), text: 'Gallery'),
+            Tab(icon: Icon(Icons.home), text: 'home'),
           ],
           labelColor: Colors.blue,
           unselectedLabelColor: Colors.grey,
