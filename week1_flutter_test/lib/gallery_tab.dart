@@ -129,20 +129,6 @@ class GalleryTabState extends State<GalleryTab> {
     Map<String, List<File>> groupedImages = _groupByDate(images);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Gallery'),
-        actions: [
-          if (isSelectionMode)
-            IconButton(
-              icon: Icon(Icons.delete),
-              onPressed: deleteSelectedImages,
-            ),
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: _pickImages,
-          ),
-        ],
-      ),
       body: groupedImages.isEmpty
           ? Center(child: Text('No images found.'))
           : ListView(
@@ -213,6 +199,22 @@ class GalleryTabState extends State<GalleryTab> {
             ],
           );
         }).toList(),
+      ),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          if (isSelectionMode)
+            FloatingActionButton(
+              onPressed: deleteSelectedImages,
+              child: Icon(Icons.delete),
+              backgroundColor: Colors.red,
+            ),
+          SizedBox(width: 16),
+          FloatingActionButton(
+            onPressed: _pickImages,
+            child: Icon(Icons.add),
+          ),
+        ],
       ),
     );
   }

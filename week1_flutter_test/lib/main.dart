@@ -63,7 +63,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           controller: _tabController,
           children: [
             ContactsTab(),
-            HomeTab(cameras: cameras), 
+            HomeTab(cameras: cameras),
             GalleryTab(key: _galleryTabKey),
           ],
         ),
