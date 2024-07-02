@@ -265,12 +265,18 @@ class _ContactsTabState extends State<ContactsTab> {
             child: Row(
               children: [
                 Expanded(
-                  child: TextField(
-                    controller: searchController,
-                    decoration: InputDecoration(
-                      labelText: 'Search',
-                      prefixIcon: Icon(Icons.search),
-                      border: OutlineInputBorder(),
+                  child: Container(
+                    height: 40.0, // 원하는 높이로 설정
+                    child: TextField(
+                      controller: searchController,
+                      decoration: InputDecoration(
+                        labelText: 'Search',
+                        prefixIcon: Icon(Icons.search),
+                        contentPadding: EdgeInsets.symmetric(vertical: 10.0), // 텍스트 위치를 위로 조정
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0), // 테두리를 둥글게 만듭니다.
+                        ),
+                      ),
                     ),
                   ),
                 ),
