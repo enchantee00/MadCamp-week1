@@ -65,6 +65,9 @@ class _MyHomePageState extends State<MyHomePage> {
       _getWidgetSize();
       _moveCarouselToSavedPosition();
     });
+    WidgetsBinding.instance.addPostFrameCallback((_) => _getWidgetSize());
+    cameraService = CameraService(cameras: widget.cameras);
+    cameraService.initializeCamera();
   }
 
   Future<void> _loadCarouselPosition() async {
@@ -86,13 +89,13 @@ class _MyHomePageState extends State<MyHomePage> {
   // CameraService 인스턴스 생성
   late CameraService cameraService;
 
-  @override
+  /*@override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => _getWidgetSize());
     cameraService = CameraService(cameras: widget.cameras);
     cameraService.initializeCamera();
-  }
+  }*/
 
   @override
   void dispose() {
@@ -267,15 +270,6 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
-  }
-
-  void _getWidgetSize() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final RenderBox renderBox = _carouselKey.currentContext?.findRenderObject() as RenderBox;
-      setState(() {
-        widgetSize = renderBox.size;
-      });
-    });
   }
 
   Future<void> _loadWidgetData() async {
