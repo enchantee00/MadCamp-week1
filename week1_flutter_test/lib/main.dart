@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'contacts_tab.dart';
-import 'camera_tab.dart';
+import 'camera_service.dart';
 import 'gallery_tab.dart'; // GalleryTab import 추가
 import 'home_tab.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:permission_handler/permission_handler.dart';
-
 
 List<CameraDescription> cameras = [];
 
@@ -45,7 +44,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this, initialIndex: 1);
+    _tabController = TabController(length: 3, vsync: this, initialIndex: 1);
   }
 
   void _onPictureTaken(String path) {
@@ -64,9 +63,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           controller: _tabController,
           children: [
             ContactsTab(),
-            CameraTab(cameras: cameras, onPictureTaken: _onPictureTaken),
+            HomeTab(cameras: cameras), 
             GalleryTab(key: _galleryTabKey),
-            HomeTab(),
           ],
         ),
       ),
@@ -74,9 +72,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         controller: _tabController,
         tabs: [
           Tab(icon: Icon(Icons.contacts), text: 'Contacts'),
-          Tab(icon: Icon(Icons.camera_alt), text: 'Camera'),
-          Tab(icon: Icon(Icons.photo), text: 'Gallery'),
-          Tab(icon: Icon(Icons.home), text: 'Home'),
+          Tab(icon: Icon(Icons.camera_alt), text: 'Home'),
+          Tab(icon: Icon(Icons.photo), text: 'Gallery')
         ],
         labelColor: Colors.blue,
         unselectedLabelColor: Colors.grey,

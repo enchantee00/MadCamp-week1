@@ -4,6 +4,9 @@ import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'home_SlideWidgets.dart';
 import 'edit_profile.dart';
+import 'package:camera/camera.dart';
+import 'camera_service.dart';
+import 'camera_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +14,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 class HomeTab extends StatelessWidget {
+  final List<CameraDescription> cameras;
+
+  HomeTab({required this.cameras});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -18,13 +25,17 @@ class HomeTab extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(),
+      home: MyHomePage(cameras: cameras),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
+  final List<CameraDescription> cameras;
+
+  MyHomePage({required this.cameras});
+
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -72,6 +83,23 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  // CameraService 인스턴스 생성
+  late CameraService cameraService;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _getWidgetSize());
+    cameraService = CameraService(cameras: widget.cameras);
+    cameraService.initializeCamera();
+  }
+
+  @override
+  void dispose() {
+    cameraService.disposeCamera();
+    super.dispose();
+  }
+
   void _editProfile() async {
     final updatedInfo = await Navigator.push(
       context,
@@ -96,13 +124,130 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Future<void> _pickImage() async {
+  Future<void> _pickImage(BuildContext parentContext) async {
     final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         _image = XFile(pickedFile.path);
       });
+
+      if (!mounted) return;
+
+      // 다이얼로그를 표시할 때 상위 context를 사용합니다.
+      _showLoadingDialog(parentContext);
+
+      // 선택한 이미지를 Flask 서버로 전송하여 OCR 및 텍스트 처리
+      try {
+        final processedText = await cameraService.processImage(pickedFile.path);
+        Navigator.of(parentContext, rootNavigator: true).pop(); // 로딩 팝업 닫기
+
+        if (processedText != null) {
+          if (mounted) cameraService.showOCRResultDialog(parentContext, processedText);
+        } else {
+          if (mounted) _showErrorDialog(parentContext, 'Failed to process the image.');
+        }
+      } catch (e) {
+        Navigator.of(parentContext, rootNavigator: true).pop(); // 로딩 팝업 닫기
+        _showErrorDialog(parentContext, 'An error occurred: $e');
+      }
+    } else {
+      print('No image selected.');
     }
+  }
+
+
+
+  void _showLoadingDialog(BuildContext context) {
+    if (!mounted) return;
+    showDialog(
+      context: context,
+      barrierDismissible: false, // 팝업 바깥을 클릭해도 팝업이 닫히지 않도록 설정
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Row(
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(width: 20),
+              Text("로딩 중..."),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showErrorDialog(BuildContext context, String message) {
+    if (!mounted) return;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Error"),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("확인"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showCameraScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CameraScreen(
+          cameras: widget.cameras,
+          cameraService: cameraService,
+        ),
+      ),
+    );
+  }
+
+  void _showChoiceDialog(BuildContext parentContext) {
+    showDialog(
+      context: parentContext,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("옵션 선택"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _showCameraScreen(parentContext);
+                },
+                icon: Icon(Icons.camera_alt),
+                label: Text("촬영"),
+              ),
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _pickImage(parentContext);
+                },
+                icon: Icon(Icons.photo_library),
+                label: Text("불러오기"),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _getWidgetSize() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final RenderBox renderBox = _carouselKey.currentContext?.findRenderObject() as RenderBox;
+      setState(() {
+        widgetSize = renderBox.size;
+      });
+    });
   }
 
   Future<void> _navigateToWidgetsGridScreen(BuildContext context) async {
@@ -152,6 +297,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> _saveCarouselPosition(int position) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('carouselPosition', position);
+
   }
 
   @override
@@ -185,7 +331,8 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Icon(Icons.camera_front),
             label: 'Add to Contacts',
             onTap: () {
-              // Add your camera functionality here
+              // 옵션 선택 팝업 표시
+              _showChoiceDialog(context);
             },
           ),
         ],
@@ -342,7 +489,7 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: linkData.map((data) => Padding(
-          padding: const EdgeInsets.only(left: 25.0, top: 10.0,right: 15.0,bottom: 10.0),
+          padding: const EdgeInsets.only(left: 25.0, top: 10.0, right: 15.0, bottom: 10.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
