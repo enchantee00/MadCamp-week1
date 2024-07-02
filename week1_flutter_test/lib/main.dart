@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         controller: _tabController,
         tabs: [
           Tab(icon: Icon(Icons.contacts), text: 'Contacts'),
-          Tab(icon: Icon(Icons.camera_alt), text: 'Home'),
+          Tab(icon: Icon(Icons.home_filled), text: 'Home'),
           Tab(icon: Icon(Icons.photo), text: 'Gallery')
         ],
         labelColor: Colors.blue,

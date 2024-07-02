@@ -302,8 +302,9 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('내 정보'),
+      appBar: PreferredSize(
+        child: AppBar(),
+        preferredSize: Size.fromHeight(0),
       ),
       floatingActionButton: SpeedDial(
         icon: Icons.add,
@@ -337,9 +338,13 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Padding(
             padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 5.0, bottom: 5.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height*0.25,
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         flex: 1,
@@ -363,6 +368,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            SizedBox(height:MediaQuery.of(context).size.height*0.04),
                             Text(infoMap['name'] ?? 'Unknown',
                                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                             SizedBox(height: 8),
@@ -425,7 +431,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           margin: EdgeInsets.symmetric(horizontal: 5.0),
                           child: type == 'Link'
                               ? _createUpdatedLinkWidget(
-                            List<Map<String, String>>.from(widgetData['links']),
+                            List<Map<String, dynamic>>.from(widgetData['links']),
                             color,
                             true,
                           )
@@ -473,7 +479,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget _createUpdatedLinkWidget(List<Map<String, String>> linkData, Color color, bool openLinks) {
+  Widget _createUpdatedLinkWidget(List<Map<String, dynamic>> linkData, Color color, bool openLinks) {
     return Container(
       margin: EdgeInsets.all(5.0),
       decoration: BoxDecoration(
