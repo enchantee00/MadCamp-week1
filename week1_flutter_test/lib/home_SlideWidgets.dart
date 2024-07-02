@@ -481,7 +481,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Select a widget to add'),
+          title: Text('Select a widget to add',style : TextStyle(fontSize: 22)),
           content: Container(
             width: width,
             height: height, // Set the height of the container
@@ -494,7 +494,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                     crossAxisCount: 2, // Number of columns
                     mainAxisSpacing: 10,
                     crossAxisSpacing: 10,
-                    childAspectRatio: 0.6, // Adjust the aspect ratio
+                    childAspectRatio: 0.63, // Adjust the aspect ratio
                     children: [
                       GestureDetector(
                         onTap: () {
@@ -539,7 +539,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
   void _showLinkWidgetSettings() async {
     TextEditingController textController = TextEditingController();
     TextEditingController summaryController = TextEditingController();
-    List<Map<String, String>> linkData = [];
+    List<Map<String, dynamic>> linkData = [];
     Color selectedColor = Colors.orange;
 
     bool? update = await showDialog<bool>(
