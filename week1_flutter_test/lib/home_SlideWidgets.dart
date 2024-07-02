@@ -4,36 +4,165 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:flutter/services.dart';
 
-class EditWidgetPopup extends StatelessWidget {
+class EditWidgetPopup extends StatefulWidget {
   final Map<String, dynamic> widgetData;
   final double width;
   final double height;
+  final ValueChanged<Map<String, dynamic>> onSave;
+  final List<Color> availableColors;
 
   EditWidgetPopup({
     required this.widgetData,
     required this.width,
     required this.height,
+    required this.onSave,
+    required this.availableColors,
   });
 
   @override
+  _EditWidgetPopupState createState() => _EditWidgetPopupState();
+}
+
+class _EditWidgetPopupState extends State<EditWidgetPopup> {
+  late Map<String, dynamic> editableWidgetData;
+  late List<Map<String, dynamic>> linkData;
+  late List<Map<String, dynamic>> todoData;
+  late String imagePath;
+  late Color selectedColor;
+
+  List<TextEditingController> urlControllers = [];
+  List<TextEditingController> summaryControllers = [];
+  List<TextEditingController> todoControllers = [];
+
+  @override
+  void initState() {
+    super.initState();
+    editableWidgetData = Map.from(widget.widgetData);
+    linkData = List<Map<String, dynamic>>.from(editableWidgetData['links'] ?? []);
+    todoData = List<Map<String, dynamic>>.from(editableWidgetData['todos'] ?? []);
+    imagePath = editableWidgetData['imagePath'] ?? '';
+    selectedColor = Color(int.parse(editableWidgetData['color']));
+
+    for (var link in linkData) {
+      urlControllers.add(TextEditingController(text: link['url']));
+      summaryControllers.add(TextEditingController(text: link['summary']));
+    }
+
+    for (var todo in todoData) {
+      todoControllers.add(TextEditingController(text: todo['task']));
+    }
+  }
+
+  @override
+  void dispose() {
+    for (var controller in urlControllers) {
+      controller.dispose();
+    }
+    for (var controller in summaryControllers) {
+      controller.dispose();
+    }
+    for (var controller in todoControllers) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  void _updateLinkData(int index, String url, String summary) {
+    setState(() {
+      linkData[index] = {'url': url, 'summary': summary};
+    });
+  }
+
+  void _addNewLink(String url, String summary) {
+    setState(() {
+      linkData.add({'url': url, 'summary': summary});
+      urlControllers.add(TextEditingController(text: url));
+      summaryControllers.add(TextEditingController(text: summary));
+    });
+  }
+
+  void _deleteLink(int index) {
+    setState(() {
+      linkData.removeAt(index);
+      urlControllers.removeAt(index).dispose();
+      summaryControllers.removeAt(index).dispose();
+    });
+  }
+
+  void _updateTodoData(int index, String task) {
+    setState(() {
+      todoData[index]['task'] = task;
+    });
+  }
+
+  void _toggleTodoDone(int index, bool done) {
+    setState(() {
+      todoData[index]['done'] = done;
+    });
+  }
+
+  void _addNewTodoTask(String task) {
+    setState(() {
+      todoData.add({'task': task, 'done': false});
+      todoControllers.add(TextEditingController(text: task));
+    });
+  }
+
+  void _deleteTodoTask(int index) {
+    setState(() {
+      todoData.removeAt(index);
+      todoControllers.removeAt(index).dispose();
+    });
+  }
+
+  void _pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        imagePath = pickedFile.path;
+      });
+    }
+  }
+
+  void _saveChanges() {
+    setState(() {
+      editableWidgetData['links'] = linkData;
+      editableWidgetData['todos'] = todoData;
+      editableWidgetData['imagePath'] = imagePath;
+      editableWidgetData['color'] = selectedColor.value.toString();
+    });
+    widget.onSave(editableWidgetData);
+    Navigator.of(context).pop();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final type = widgetData['type'];
-    final color = Color(int.parse(widgetData['color']));
+    final type = editableWidgetData['type'];
 
     return Container(
-      width: width,
-      height: height,
-      child: type == 'Link'
-          ? _createLinkWidget(
-        context,
-        List<Map<String, String>>.from(widgetData['links']),
-        color,
-      )
-          : _createImageWidget(widgetData['imagePath'], color),
+      //width: widget.width,
+      //height: widget.height,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(
+              height: widget.height * 0.6,
+              width: widget.width * 0.6 * 0.8,
+              child: type == 'Link'
+                  ? _createLinkWidget(context, linkData, selectedColor)
+                  : type == 'Image'
+                  ? _createImageWidget(imagePath, selectedColor)
+                  : _createTodoWidget(context, todoData, selectedColor),
+            ),
+            _createEditWidget(context, type),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _createLinkWidget(BuildContext context, List<Map<String, String>> linkData, Color color) {
+  Widget _createLinkWidget(BuildContext context, List<Map<String, dynamic>> linkData, Color color) {
     return Container(
       margin: EdgeInsets.all(5.0),
       decoration: BoxDecoration(
@@ -43,7 +172,7 @@ class EditWidgetPopup extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: linkData.map((data) => Padding(
-          padding: const EdgeInsets.only(left: 25.0, top: 10.0, right: 15.0, bottom: 10.0),
+          padding: const EdgeInsets.only(left: 15.0, top: 10.0, right: 15.0, bottom: 10.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -51,7 +180,7 @@ class EditWidgetPopup extends StatelessWidget {
                 child: Text(
                   data['summary']!,
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 12,
                     color: Colors.white,
                     decoration: TextDecoration.underline,
                   ),
@@ -59,6 +188,7 @@ class EditWidgetPopup extends StatelessWidget {
               ),
               IconButton(
                 icon: Icon(Icons.copy, color: Colors.white),
+                iconSize: 20,
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: data['url']!)).then((value) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -86,17 +216,240 @@ class EditWidgetPopup extends StatelessWidget {
       ),
     );
   }
+
+  Widget _createTodoWidget(BuildContext context, List<Map<String, dynamic>> todoData, Color color) {
+    return Container(
+      margin: EdgeInsets.all(5.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        color: color,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: todoData.map((data) => Padding(
+          padding: const EdgeInsets.only(left: 15.0, top: 10.0, right: 15.0, bottom: 10.0),
+          child: Row(
+            children: [
+              Checkbox(
+                value: data['done'],
+                onChanged: (bool? value) {
+                  setState(() {
+                    data['done'] = value!;
+                  });
+                },
+              ),
+              Expanded(
+                child: Text(
+                  data['task']!,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: data['done'] ? Colors.grey : Colors.white,
+                    decoration: data['done'] ? TextDecoration.lineThrough : TextDecoration.none,
+                  ),
+                ),
+              ),
+              IconButton(
+                icon: Icon(Icons.delete, color: Colors.white),
+                iconSize: 20,
+                onPressed: () {
+                  setState(() {
+                    todoData.remove(data);
+                  });
+                },
+              ),
+            ],
+          ),
+        )).toList(),
+      ),
+    );
+  }
+
+  Widget _createEditWidget(BuildContext context, String type) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          if (type == 'Link') ...[
+            ...linkData.asMap().entries.map((entry) {
+              int index = entry.key;
+              Map<String, dynamic> link = entry.value;
+
+              return Column(
+                children: [
+                  TextField(
+                    controller: urlControllers[index],
+                    decoration: InputDecoration(labelText: 'URL'),
+                    onChanged: (value) {
+                      _updateLinkData(index, value, summaryControllers[index].text);
+                    },
+                  ),
+                  TextField(
+                    controller: summaryControllers[index],
+                    decoration: InputDecoration(labelText: 'Summary'),
+                    onChanged: (value) {
+                      _updateLinkData(index, urlControllers[index].text, value);
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      _deleteLink(index);
+                    },
+                  ),
+                ],
+              );
+            }).toList(),
+            TextButton(
+              onPressed: () {
+                TextEditingController urlController = TextEditingController();
+                TextEditingController summaryController = TextEditingController();
+
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Add New Link'),
+                      content: Column(
+                        children: [
+                          TextField(
+                            controller: urlController,
+                            decoration: InputDecoration(labelText: 'URL'),
+                          ),
+                          TextField(
+                            controller: summaryController,
+                            decoration: InputDecoration(labelText: 'Summary'),
+                          ),
+                        ],
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            _addNewLink(urlController.text, summaryController.text);
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('Add'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              child: Text('Add Link'),
+            ),
+          ],
+          if (type == 'Image') ...[
+            ElevatedButton(
+              onPressed: _pickImage,
+              child: Text('Change Image'),
+            ),
+          ],
+          if (type == 'TODO') ...[
+            ...todoData.asMap().entries.map((entry) {
+              int index = entry.key;
+              Map<String, dynamic> todo = entry.value;
+
+              return Column(
+                children: [
+                  TextField(
+                    controller: todoControllers[index],
+                    decoration: InputDecoration(labelText: 'Task'),
+                    onChanged: (value) {
+                      _updateTodoData(index, value);
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      _deleteTodoTask(index);
+                    },
+                  ),
+                ],
+              );
+            }).toList(),
+            TextButton(
+              onPressed: () {
+                TextEditingController todoController = TextEditingController();
+
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Add New Task'),
+                      content: TextField(
+                        controller: todoController,
+                        decoration: InputDecoration(labelText: 'Task'),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            _addNewTodoTask(todoController.text);
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('Add'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              child: Text('Add Task'),
+            ),
+          ],
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: widget.availableColors.map((color) {
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    selectedColor = color;
+                  });
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: color,
+                    border: selectedColor == color
+                        ? Border.all(color: Colors.black, width: 3.0)
+                        : null,
+                  ),
+                  width: 50,
+                  height: 50,
+                ),
+              );
+            }).toList(),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: _saveChanges,
+                child: Text('Save'),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class WidgetsGridScreen extends StatefulWidget {
   final List<Map<String, dynamic>> widgetDataList;
   final ValueChanged<List<Map<String, dynamic>>> onUpdate;
   final Size widgetSize;
+  final List<Color> availableColors;
 
   WidgetsGridScreen({
     required this.widgetDataList,
     required this.onUpdate,
     required this.widgetSize,
+    required this.availableColors,
   });
 
   @override
@@ -110,24 +463,19 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
   late final double widget_height;
   int? selectedIndex;
 
-  final List<Color> availableColors = [
-    Colors.purple,
-    Colors.blue,
-    Colors.red,
-  ];
-
   @override
   void initState() {
     super.initState();
     widgetDataList = List.from(widget.widgetDataList);
     widget_width = widget.widgetSize.width;
     widget_height = widget.widgetSize.height;
-    widget_ratio =  widget_width / widget_height;
-    print("$widget_width,$widget_height");
+    widget_ratio = widget_width / widget_height;
   }
 
   void _addWidget(double r) async {
     final double ratio = r; // width/height
+    final double width = MediaQuery.of(context).size.width * 0.9;
+    final double height = MediaQuery.of(context).size.height * 0.5; // Adjust height as needed
 
     int? selectedWidgetNumber = await showDialog<int>(
       context: context,
@@ -135,28 +483,41 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
         return AlertDialog(
           title: Text('Select a widget to add'),
           content: Container(
-            width: MediaQuery.of(context).size.width * 0.8,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop(1);
-                      },
-                      child: _createSampleLinkWidgetPreview(ratio),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop(2);
-                      },
-                      child: _createSampleWidget2Preview(ratio),
-                    ),
-                  ],
-                ),
-              ],
+            width: width,
+            height: height, // Set the height of the container
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  GridView.count(
+                    shrinkWrap: true,
+                    crossAxisCount: 2, // Number of columns
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                    childAspectRatio: 0.6, // Adjust the aspect ratio
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pop(1);
+                        },
+                        child:  _createSampleLinkWidgetPreview(ratio, width * 0.35),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pop(2);
+                        },
+                        child:  _createSampleWidget2Preview(ratio, width * 0.35),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pop(3);
+                        },
+                        child: _createSampleTodoWidgetPreview(ratio, width * 0.35),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -168,9 +529,12 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
         _showLinkWidgetSettings();
       } else if (selectedWidgetNumber == 2) {
         _showImageWidgetSettings();
+      } else if (selectedWidgetNumber == 3) {
+        _showTodoWidgetSettings();
       }
     }
   }
+
 
   void _showLinkWidgetSettings() async {
     TextEditingController textController = TextEditingController();
@@ -261,7 +625,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                       SizedBox(height: 16),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: availableColors.map((color) {
+                        children: widget.availableColors.map((color) {
                           return GestureDetector(
                             onTap: () {
                               setState(() {
@@ -357,7 +721,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                       SizedBox(height: 16),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: availableColors.map((color) {
+                        children: widget.availableColors.map((color) {
                           return GestureDetector(
                             onTap: () {
                               setState(() {
@@ -414,7 +778,143 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
     }
   }
 
-  Widget _createUpdatedLinkWidget(List<Map<String, String>> linkData, Color color, bool openLinks) {
+  void _showTodoWidgetSettings() async {
+    TextEditingController taskController = TextEditingController();
+    List<Map<String, dynamic>> todoData = [];
+    Color selectedColor = Colors.orange;
+
+    bool? update = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              title: Text('TODO Widget Settings'),
+              content: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextField(
+                        controller: taskController,
+                        decoration: InputDecoration(
+                          hintText: 'Enter Task',
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () {
+                          if (taskController.text.isNotEmpty) {
+                            setState(() {
+                              todoData.add({
+                                'task': taskController.text,
+                                'done': false,
+                              });
+                              taskController.clear();
+                            });
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Please enter a task')));
+                          }
+                        },
+                        child: Text('Add Task'),
+                      ),
+                      SizedBox(height: 20),
+                      Text(
+                        'Entered Tasks:',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        width: 200,
+                        height: 45,
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: todoData.length,
+                          itemBuilder: (context, index) {
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(todoData[index]['task']),
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.delete),
+                                  onPressed: () {
+                                    setState(() {
+                                      todoData.removeAt(index);
+                                    });
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: widget.availableColors.map((color) {
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedColor = color;
+                              });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: color,
+                                border: selectedColor == color
+                                    ? Border.all(color: Colors.black, width: 3.0)
+                                    : null,
+                              ),
+                              width: 50,
+                              height: 50,
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                  child: Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                  child: Text('Save'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+
+    if (update ?? false) {
+      setState(() {
+        widgetDataList.add({
+          'type': 'TODO',
+          'todos': todoData,
+          'color': selectedColor.value.toString(),
+        });
+        widget.onUpdate(widgetDataList);
+      });
+    }
+  }
+
+  Widget _createUpdatedLinkWidget(List<Map<String, dynamic>> linkData, Color color, bool openLinks) {
     return Container(
       margin: EdgeInsets.all(5.0),
       decoration: BoxDecoration(
@@ -454,6 +954,50 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
     );
   }
 
+  Widget _createUpdatedTodoWidget(List<Map<String, dynamic>> todoData, Color color) {
+    return Container(
+      margin: EdgeInsets.all(5.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        color: color,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: todoData.asMap().entries.map((entry) {
+          int index = entry.key;
+          Map<String, dynamic> data = entry.value;
+          return Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Row(
+              children: [
+                Checkbox(
+                  value: data['done'],
+                  onChanged: (bool? value) {
+                    setState(() {
+                      data['done'] = value!;
+                      widgetDataList[selectedIndex!]['todos'][index]['done'] = value;
+                      widget.onUpdate(widgetDataList);
+                    });
+                  },
+                ),
+                Expanded(
+                  child: Text(
+                    data['task']!,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: data['done']! ? Colors.grey : Colors.white,
+                      decoration: data['done']! ? TextDecoration.lineThrough : TextDecoration.none,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
   void _deleteWidget() {
     setState(() {
       if (selectedIndex != null && selectedIndex! < widgetDataList.length) {
@@ -464,15 +1008,17 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
     });
   }
 
-  Widget _createSampleLinkWidgetPreview(double r) {
-    //width/height
+  Widget _createSampleLinkWidgetPreview(double r, double availableWidth) {
+    final containerWidth = availableWidth;
+    final containerHeight = containerWidth / (r*0.8);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Container(
-          width: 180 * r * 0.8, // Carousel slider에서도 ratio 0.8 적용됨
-          height: 180,
+          width: containerWidth, // Adjusted width
+          height: containerHeight, // Adjusted height
           margin: EdgeInsets.all(2.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8.0),
@@ -487,7 +1033,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(
+                    Flexible(
                       child: Text(
                         'sample1',
                         style: TextStyle(
@@ -510,7 +1056,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(
+                    Flexible(
                       child: Text(
                         'sample2',
                         style: TextStyle(
@@ -537,12 +1083,15 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
     );
   }
 
-  Widget _createSampleWidget2Preview(double r) {
+  Widget _createSampleWidget2Preview(double r, double availableWidth) {
+    final containerWidth = availableWidth;
+    final containerHeight = containerWidth / (r*0.8);
+
     return Column(
       children: [
         Container(
-          width: 180 * r * 0.8, // Carousel slider에서도 ratio 0.8 적용됨
-          height: 180,
+          width: containerWidth, // Adjusted width
+          height: containerHeight, // Adjusted height
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8.0),
             color: Colors.blue,
@@ -556,6 +1105,82 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
       ],
     );
   }
+
+  Widget _createSampleTodoWidgetPreview(double r, double availableWidth) {
+    final containerWidth = availableWidth;
+    final containerHeight = containerWidth / (r * 0.8);
+
+    return Column(
+      children: [
+        Container(
+          width: containerWidth, // Adjusted width
+          height: containerHeight, // Adjusted height
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8.0),
+            color: Colors.green,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Flexible(
+                      child:Transform.scale(
+                        scale: 0.6,
+                        child: Checkbox(
+
+                          value: false,
+                          onChanged: null,
+                        ),
+                      )
+                    ),
+                    Flexible(
+                        child: Text(
+                      'Sample Task 1',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Colors.white,
+                        decoration: TextDecoration.none,
+                      ),
+                    )),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Flexible(
+                        child:Transform.scale(
+                          scale: 0.6,
+                          child: Checkbox(
+
+                            value: true,
+                            onChanged: null,
+                          ),
+                        )
+                    ),
+                    Flexible(
+                        child: Text(
+                          'Sample Task 1',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.white,
+                            decoration: TextDecoration.lineThrough,
+                          ),
+                        )),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+        SizedBox(height: 5), // Space between preview and label
+        Text("TODO", style: TextStyle(fontSize: 14)),
+      ],
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -603,6 +1228,13 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                         widgetData: widgetData,
                         width: widget.widgetSize.width,
                         height: widget.widgetSize.height,
+                        onSave: (updatedData) {
+                          setState(() {
+                            widgetDataList[index] = updatedData;
+                            widget.onUpdate(widgetDataList);
+                          });
+                        },
+                        availableColors: widget.availableColors,
                       ),
                     );
                   },
@@ -618,12 +1250,17 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                 ),
                 child: type == 'Link'
                     ? _createUpdatedLinkWidget(
-                  List<Map<String, String>>.from(widgetData['links']),
+                  List<Map<String, dynamic>>.from(widgetData['links']),
                   color,
                   false,
                 )
-                    : _createUpdatedImageWidget(
+                    : type == 'Image'
+                    ? _createUpdatedImageWidget(
                   widgetData['imagePath'],
+                  color,
+                )
+                    : _createUpdatedTodoWidget(
+                  List<Map<String, dynamic>>.from(widgetData['todos']),
                   color,
                 ),
               ),
@@ -643,6 +1280,7 @@ void main() {
         // Update the widget data list
       },
       widgetSize: Size(200, 200), // Provide an initial size
+      availableColors: [Colors.purple, Colors.blue, Colors.red],
     ),
   ));
 }

@@ -39,6 +39,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final GlobalKey<GalleryTabState> _galleryTabKey = GlobalKey<GalleryTabState>();
+  final PageStorageBucket _bucket = PageStorageBucket();
 
   @override
   void initState() {
@@ -56,13 +57,16 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       appBar: AppBar(
         title: Text('Camera App'),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          ContactsTab(),
-          HomeTab(cameras: cameras), // HomeTab에 cameras 매개변수 전달
-          GalleryTab(key: _galleryTabKey),
-        ],
+      body: PageStorage(
+        bucket: _bucket,
+        child: TabBarView(
+          controller: _tabController,
+          children: [
+            ContactsTab(),
+            HomeTab(cameras: cameras), 
+            GalleryTab(key: _galleryTabKey),
+          ],
+        ),
       ),
       bottomNavigationBar: TabBar(
         controller: _tabController,
