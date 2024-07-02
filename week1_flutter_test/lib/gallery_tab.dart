@@ -129,90 +129,107 @@ class GalleryTabState extends State<GalleryTab> {
     Map<String, List<File>> groupedImages = _groupByDate(images);
 
     return Scaffold(
-      body: groupedImages.isEmpty
-          ? Center(child: Text('No images found.'))
-          : ListView(
-        children: groupedImages.keys.map((String date) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  date,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ),
-              GridView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 4.0,
-                  mainAxisSpacing: 4.0,
-                ),
-                itemCount: groupedImages[date]!.length,
-                itemBuilder: (context, index) {
-                  final image = groupedImages[date]![index];
-                  final isSelected = selectedImages.contains(image);
-                  return GestureDetector(
-                    onLongPress: () => _toggleSelection(image),
-                    onTap: () {
-                      if (isSelectionMode) {
-                        _toggleSelection(image);
-                      } else {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ImagePage(
-                              images: groupedImages[date]!,
-                              initialIndex: index,
-                            ),
-                          ),
-                        );
-                      }
-                    },
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                          child: Image.file(
-                            image,
-                            fit: BoxFit.cover,
-                            color: isSelected ? Colors.black45 : null,
-                            colorBlendMode: isSelected ? BlendMode.darken : null,
-                          ),
-                        ),
-                        if (isSelected)
-                          Positioned(
-                            top: 8,
-                            right: 8,
-                            child: Icon(
-                              Icons.check_circle,
-                              color: Colors.blue,
-                            ),
-                          ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ],
-          );
-        }).toList(),
-      ),
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+      body: Stack(
         children: [
-          if (isSelectionMode)
-            FloatingActionButton(
-              onPressed: deleteSelectedImages,
-              child: Icon(Icons.delete),
-              backgroundColor: Colors.red,
+          groupedImages.isEmpty
+              ? Center(child: Text('No images found.', style: TextStyle(fontSize: 14)))
+              : ListView(
+            children: groupedImages.keys.map((String date) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      date,
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 4.0,
+                      mainAxisSpacing: 4.0,
+                    ),
+                    itemCount: groupedImages[date]!.length,
+                    itemBuilder: (context, index) {
+                      final image = groupedImages[date]![index];
+                      final isSelected = selectedImages.contains(image);
+                      return GestureDetector(
+                        onLongPress: () => _toggleSelection(image),
+                        onTap: () {
+                          if (isSelectionMode) {
+                            _toggleSelection(image);
+                          } else {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ImagePage(
+                                  images: groupedImages[date]!,
+                                  initialIndex: index,
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                        child: Stack(
+                          children: [
+                            Positioned.fill(
+                              child: Image.file(
+                                image,
+                                fit: BoxFit.cover,
+                                color: isSelected ? Colors.black45 : null,
+                                colorBlendMode: isSelected ? BlendMode.darken : null,
+                              ),
+                            ),
+                            if (isSelected)
+                              Positioned(
+                                top: 8,
+                                right: 8,
+                                child: Icon(
+                                  Icons.check_circle,
+                                  color: Colors.blue,
+                                  size: 16,
+                                ),
+                              ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              );
+            }).toList(),
+          ),
+          Positioned(
+            top: 8, // 버튼을 더 위로 이동
+            right: 16,
+            child: Row(
+              children: [
+                if (isSelectionMode)
+                  ElevatedButton(
+                    onPressed: deleteSelectedImages,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey,
+                      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                      minimumSize: Size(50, 30), // 최소 크기 설정
+                    ),
+                    child: Text('Delete', style: TextStyle(fontSize: 10, color: Colors.white)),
+                  ),
+                SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: _pickImages,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey,
+                    padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                    minimumSize: Size(50, 30), // 최소 크기 설정
+                  ),
+                  child: Text('Load', style: TextStyle(fontSize: 10, color: Colors.white)),
+                ),
+              ],
             ),
-          SizedBox(width: 16),
-          FloatingActionButton(
-            onPressed: _pickImages,
-            child: Icon(Icons.add),
           ),
         ],
       ),

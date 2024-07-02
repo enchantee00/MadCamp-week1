@@ -5,8 +5,15 @@ import 'camera_service.dart';
 class CameraScreen extends StatefulWidget {
   final List<CameraDescription> cameras;
   final CameraService cameraService;
+  final bool performOCR;
+  final Function(String) onPictureTaken;
 
-  CameraScreen({required this.cameras, required this.cameraService});
+  CameraScreen({
+    required this.cameras,
+    required this.cameraService,
+    required this.performOCR,
+    required this.onPictureTaken,
+  });
 
   @override
   _CameraScreenState createState() => _CameraScreenState();
@@ -28,19 +35,25 @@ class _CameraScreenState extends State<CameraScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true, // Body를 AppBar 뒤로 확장
       body: FutureBuilder<void>(
         future: widget.cameraService.initializeControllerFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return Stack(
               children: [
-                CameraPreview(widget.cameraService.controller!),
+                Positioned.fill(
+                  child: CameraPreview(widget.cameraService.controller!),
+                ),
                 Positioned(
                   bottom: 20,
                   left: MediaQuery.of(context).size.width / 2 - 30,
                   child: ElevatedButton(
                     onPressed: () async {
-                      await widget.cameraService.takePicture(context);
+                      final path = await widget.cameraService.takePicture(context, performOCR: widget.performOCR);
+                      if (path != null && !widget.performOCR) {
+                        widget.onPictureTaken(path);
+                      }
                     },
                     child: Icon(Icons.camera_alt),
                     style: ElevatedButton.styleFrom(

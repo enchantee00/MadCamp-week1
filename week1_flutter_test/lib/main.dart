@@ -9,6 +9,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_svg/flutter_svg.dart'; // Add this import
+import 'splash_screen.dart'; // 스플래시 스크린 import
 
 List<CameraDescription> cameras = [];
 
@@ -27,71 +28,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(),
-    );
-  }
-}
-
-class HomePage extends StatefulWidget {
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-  final GlobalKey<GalleryTabState> _galleryTabKey = GlobalKey<GalleryTabState>();
-  final PageStorageBucket _bucket = PageStorageBucket();
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 3, vsync: this, initialIndex: 1);
-  }
-
-  void _onPictureTaken(String path) {
-    _galleryTabKey.currentState?.addImage(path); // 사진을 찍으면 갤러리 탭에 추가
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SizedBox(width:10.0),
-            SvgPicture.asset(
-              'photo/UNiV_logo.svg', // Path to your SVG asset
-              height: 30.0, // Adjust the height as needed
-            ),
-          ],
-        ),
-        centerTitle: true,
-        backgroundColor: null, // You can set this to match your status bar color
-      ),
-      body: PageStorage(
-        bucket: _bucket,
-        child: TabBarView(
-          controller: _tabController,
-          children: [
-            ContactsTab(),
-            HomeTab(cameras: cameras),
-            GalleryTab(key: _galleryTabKey),
-          ],
-        ),
-      ),
-      bottomNavigationBar: TabBar(
-        controller: _tabController,
-        tabs: [
-          Tab(icon: Icon(Icons.contacts), text: 'Contacts'),
-          Tab(icon: Icon(Icons.home_filled), text: 'Home'),
-          Tab(icon: Icon(Icons.photo), text: 'Gallery')
-        ],
-        labelColor: Colors.blue,
-        unselectedLabelColor: Colors.grey,
-        indicatorSize: TabBarIndicatorSize.tab,
-        indicatorColor: Colors.blue,
-      ),
+      home: SplashScreen(cameras: cameras), // 스플래시 스크린으로 변경
     );
   }
 }
