@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'contacts_tab.dart';
-import 'camera_service.dart';
-import 'gallery_tab.dart'; // GalleryTab import 추가
-import 'home_tab.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
-import 'dart:typed_data';
-import 'package:permission_handler/permission_handler.dart';
+import 'splash_screen.dart'; // 스플래시 스크린 import
 
 List<CameraDescription> cameras = [];
 
@@ -26,60 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(),
-    );
-  }
-}
-
-class HomePage extends StatefulWidget {
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-  final GlobalKey<GalleryTabState> _galleryTabKey = GlobalKey<GalleryTabState>();
-  final PageStorageBucket _bucket = PageStorageBucket();
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 3, vsync: this, initialIndex: 1);
-  }
-
-  void _onPictureTaken(String path) {
-    _galleryTabKey.currentState?.addImage(path); // 사진을 찍으면 갤러리 탭에 추가
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Camera App'),
-      ),
-      body: PageStorage(
-        bucket: _bucket,
-        child: TabBarView(
-          controller: _tabController,
-          children: [
-            ContactsTab(),
-            HomeTab(cameras: cameras),
-            GalleryTab(key: _galleryTabKey),
-          ],
-        ),
-      ),
-      bottomNavigationBar: TabBar(
-        controller: _tabController,
-        tabs: [
-          Tab(icon: Icon(Icons.contacts), text: 'Contacts'),
-          Tab(icon: Icon(Icons.home_filled), text: 'Home'),
-          Tab(icon: Icon(Icons.photo), text: 'Gallery')
-        ],
-        labelColor: Colors.blue,
-        unselectedLabelColor: Colors.grey,
-        indicatorSize: TabBarIndicatorSize.tab,
-        indicatorColor: Colors.blue,
-      ),
+      home: SplashScreen(cameras: cameras), // 스플래시 스크린으로 변경
     );
   }
 }
