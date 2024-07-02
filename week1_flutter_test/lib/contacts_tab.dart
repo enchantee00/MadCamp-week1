@@ -258,30 +258,31 @@ class _ContactsTabState extends State<ContactsTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Contacts'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.sync),
-            onPressed: getAllContacts,
-          ),
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: _addNewContact,
-          ),
-        ],
-      ),
       body: Column(
         children: [
           Padding(
             padding: EdgeInsets.all(8.0),
-            child: TextField(
-              controller: searchController,
-              decoration: InputDecoration(
-                labelText: 'Search',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
-              ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: searchController,
+                    decoration: InputDecoration(
+                      labelText: 'Search',
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.sync),
+                  onPressed: getAllContacts,
+                ),
+                IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: _addNewContact,
+                ),
+              ],
             ),
           ),
           Expanded(
