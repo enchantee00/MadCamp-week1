@@ -67,7 +67,7 @@ class CameraService {
     final imageBase64 = base64Encode(bytes);
 
     final response = await http.post(
-      Uri.parse('http://10.125.68.136:5000/process_image'),
+      Uri.parse('http://143.248.219.154:5000/process_image'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'image': imageBase64}),
     );
@@ -179,7 +179,7 @@ class CameraService {
                 String updatedStudentId = studentIdController.text;
                 String phone = phoneController.text;
                 String email = emailController.text;
-                _addNewContact(updatedName, updatedStudentId, phone, email);
+                _addNewContact(updatedName, updatedStudentId, phone, email, context);
               },
             ),
           ],
@@ -188,7 +188,7 @@ class CameraService {
     );
   }
 
-  Future<void> _addNewContact(String name, String studentId, String phone, String email) async {
+  Future<void> _addNewContact(String name, String studentId, String phone, String email, BuildContext context) async {
     String givenName = name.isEmpty ? '' : name.substring(1);
     String familyName = name.isEmpty ? '' : name.substring(0, 1);
 
@@ -203,7 +203,28 @@ class CameraService {
 
     if (await Permission.contacts.request().isGranted) {
       await ContactsService.addContact(newContact);
+      _showContactAddedDialog(context, name); // 연락처 추가 후 확인 대화상자 표시
     }
+  }
+
+  void _showContactAddedDialog(BuildContext context, String name) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Contact Added"),
+          content: Text("The contact for $name has been added successfully."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop();
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _showErrorDialog(BuildContext context, String message) {

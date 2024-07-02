@@ -56,7 +56,7 @@ class _ContactsTabState extends State<ContactsTab> {
     }
   }
 
-  Future<void> _getAllContacts() async {
+  Future<void> getAllContacts() async {
     setState(() {
       isLoading = true;
     });
@@ -139,7 +139,9 @@ class _ContactsTabState extends State<ContactsTab> {
       filteredContacts = contacts.where((contact) {
         bool matchesName = contact.displayName?.toLowerCase().contains(query) ?? false;
         bool matchesPhone = contact.phones?.any((phone) => phone.value?.toLowerCase().contains(query) ?? false) ?? false;
-        return matchesName || matchesPhone;
+        bool matchesEmail = contact.emails?.any((email) => email.value?.toLowerCase().contains(query) ?? false) ?? false;
+        bool matchesStudentId = contact.company?.toLowerCase().contains(query) ?? false;
+        return matchesName || matchesPhone || matchesEmail || matchesStudentId;
       }).toList();
     });
   }
@@ -170,9 +172,13 @@ class _ContactsTabState extends State<ContactsTab> {
 
       if (await Permission.contacts.request().isGranted) {
         await ContactsService.addContact(newContact);
-        _getAllContacts();
+        getAllContacts();
       }
     }
+  }
+
+  void refreshContacts() {
+    getAllContacts();
   }
 
   void _showErrorSnackbar(String message) {
@@ -257,7 +263,7 @@ class _ContactsTabState extends State<ContactsTab> {
         actions: [
           IconButton(
             icon: Icon(Icons.sync),
-            onPressed: _getAllContacts,
+            onPressed: getAllContacts,
           ),
           IconButton(
             icon: Icon(Icons.add),

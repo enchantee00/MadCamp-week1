@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'dart:typed_data';
 import 'dart:convert';
 
@@ -104,6 +105,14 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
     }
   }
 
+  Future<void> _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Uint8List? avatar = _convertAvatar(widget.contact.avatar);
@@ -164,7 +173,29 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
                 decoration: InputDecoration(labelText: 'Phone'),
                 keyboardType: TextInputType.phone,
               )
-                  : Text('Phone: ${widget.contact.phones?.isNotEmpty == true ? widget.contact.phones!.first.value : 'No Phone'}', style: TextStyle(fontSize: 18)),
+                  : Row(
+                children: [
+                  Expanded(
+                    child: Text('Phone: ${widget.contact.phones?.isNotEmpty == true ? widget.contact.phones!.first.value : 'No Phone'}', style: TextStyle(fontSize: 18)),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.phone),
+                    onPressed: () {
+                      if (widget.contact.phones?.isNotEmpty == true) {
+                        _launchURL('tel:${widget.contact.phones!.first.value}');
+                      }
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.message),
+                    onPressed: () {
+                      if (widget.contact.phones?.isNotEmpty == true) {
+                        _launchURL('sms:${widget.contact.phones!.first.value}');
+                      }
+                    },
+                  ),
+                ],
+              ),
               SizedBox(height: 10),
               _isEditing
                   ? TextField(
