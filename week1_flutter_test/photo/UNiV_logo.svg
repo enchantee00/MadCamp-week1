@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="32.749004mm"
+   height="11.136885mm"
+   viewBox="0 0 32.749004 11.136885"
+   version="1.1"
+   id="svg1"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <g
+     id="layer1"
+     transform="translate(-54.234491,-107.98858)">
+    <path
+       style="-inkscape-font-specification:'neurimbo Gothic';fill:#1a1a1a;stroke-width:0.265"
+       d="m 73.380814,109.35495 0.169333,6.79026 h 1.69333 l 0.169333,-6.79026 z"
+       id="path1" />
+    <path
+       style="-inkscape-font-specification:'neurimbo Gothic';fill:#41e3d9;fill-opacity:1;stroke-width:0.265"
+       d="m 74.464545,119.12547 c 0.931331,0 1.269997,-0.4572 1.269997,-1.016 0,-0.57573 -0.338666,-1.03293 -1.269997,-1.03293 -0.897465,0 -1.236131,0.4572 -1.236131,1.03293 0,0.5588 0.338666,1.016 1.236131,1.016 z"
+       id="text3" />
+    <path
+       style="-inkscape-font-specification:'neurimbo Gothic';fill:#1a1a1a;stroke-width:0.265"
+       d="m 54.234493,109.43964 v 4.67359 c 0.01693,2.72626 1.608664,4.92759 4.910657,4.92759 3.28506,0 4.859857,-2.20133 4.876791,-4.92759 v -0.0339 -4.63973 h -1.69333 v 4.63973 c 0,2.11666 -0.846665,3.43746 -3.183461,3.43746 -2.353729,0 -3.217327,-1.3208 -3.217327,-3.43746 v -4.63973 z m 11.070974,3.88862 4.715088,5.54323 h 1.69333 v -9.43185 h -1.69333 v 7.04425 l -4.753974,-5.60241 z m 18.122036,5.54323 3.555993,-9.43185 h -1.811863 l -2.980261,7.89092 h -0.457199 l -2.98026,-7.89092 h -1.811864 l 3.555993,9.43185 z"
+       id="text2"
+       aria-label="UNIV" />
+    <rect
+       style="fill:#589bfe;fill-opacity:1;stroke-width:0.264999"
+       id="rect2"
+       width="1.6933291"
+       height="3.5831876"
+       x="56.844612"
+       y="107.98859"
+       ry="0" />
+    <rect
+       style="fill:#ff676a;fill-opacity:1;stroke-width:0.264999"
+       id="rect2-3"
+       width="1.6933291"
+       height="3.5831876"
+       x="59.583569"
+       y="107.98859"
+       ry="0" />
+  </g>
+</svg>

@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'contacts_tab.dart';
 import 'camera_service.dart';
-import 'gallery_tab.dart'; // GalleryTab import 추가
+import 'gallery_tab.dart';
 import 'home_tab.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_svg/flutter_svg.dart'; // Add this import
 
 List<CameraDescription> cameras = [];
 
@@ -55,7 +56,18 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Camera App'),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SizedBox(width:10.0),
+            SvgPicture.asset(
+              'photo/UNiV_logo.svg', // Path to your SVG asset
+              height: 30.0, // Adjust the height as needed
+            ),
+          ],
+        ),
+        centerTitle: true,
+        backgroundColor: null, // You can set this to match your status bar color
       ),
       body: PageStorage(
         bucket: _bucket,
