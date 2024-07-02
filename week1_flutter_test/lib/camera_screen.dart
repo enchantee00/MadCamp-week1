@@ -35,6 +35,7 @@ class _CameraScreenState extends State<CameraScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true, // Body를 AppBar 뒤로 확장
       body: FutureBuilder<void>(
         future: widget.cameraService.initializeControllerFuture,
         builder: (context, snapshot) {
