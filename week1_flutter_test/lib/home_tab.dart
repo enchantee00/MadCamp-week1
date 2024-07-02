@@ -57,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final GlobalKey _carouselKey = GlobalKey();
   final GlobalKey<GalleryTabState> _galleryTabKey = GlobalKey<GalleryTabState>(); // 추가된 부분
   Size? widgetSize;
-  final List<Color> availableColors = [Colors.red, Colors.blue, Colors.purple];
+  final List<Color> availableColors = [Color(0xff6194bf),Color(0xfff19f58), Color(0xffd15e5e), Color(0xffa0c6c2), Color(0xff81b293),];
 
   @override
   void initState() {

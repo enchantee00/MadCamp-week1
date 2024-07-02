@@ -141,8 +141,6 @@ class _EditWidgetPopupState extends State<EditWidgetPopup> {
     final type = editableWidgetData['type'];
 
     return Container(
-      //width: widget.width,
-      //height: widget.height,
       child: SingleChildScrollView(
         child: Column(
           children: [
@@ -395,28 +393,36 @@ class _EditWidgetPopupState extends State<EditWidgetPopup> {
               child: Text('Add Task'),
             ),
           ],
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: widget.availableColors.map((color) {
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    selectedColor = color;
-                  });
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: color,
-                    border: selectedColor == color
-                        ? Border.all(color: Colors.black, width: 3.0)
-                        : null,
-                  ),
-                  width: 50,
-                  height: 50,
-                ),
+          Column(
+            children: List.generate((widget.availableColors.length / 5).ceil(), (index) {
+              int startIndex = index * 5;
+              int endIndex = (index + 1) * 5;
+              endIndex = endIndex > widget.availableColors.length ? widget.availableColors.length : endIndex;
+
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: widget.availableColors.sublist(startIndex, endIndex).map((color) {
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedColor = color;
+                      });
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: color,
+                        border: selectedColor == color
+                            ? Border.all(color: Colors.black, width: 3.0)
+                            : null,
+                      ),
+                      width: 50,
+                      height: 50,
+                    ),
+                  );
+                }).toList(),
               );
-            }).toList(),
+            }),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -481,7 +487,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Select a widget to add',style : TextStyle(fontSize: 22)),
+          title: Text('Select a widget to add', style: TextStyle(fontSize: 22)),
           content: Container(
             width: width,
             height: height, // Set the height of the container
@@ -500,13 +506,13 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                         onTap: () {
                           Navigator.of(context).pop(1);
                         },
-                        child:  _createSampleLinkWidgetPreview(ratio, width * 0.35),
+                        child: _createSampleLinkWidgetPreview(ratio, width * 0.35),
                       ),
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).pop(2);
                         },
-                        child:  _createSampleWidget2Preview(ratio, width * 0.35),
+                        child: _createSampleWidget2Preview(ratio, width * 0.35),
                       ),
                       GestureDetector(
                         onTap: () {
@@ -534,7 +540,6 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
       }
     }
   }
-
 
   void _showLinkWidgetSettings() async {
     TextEditingController textController = TextEditingController();
@@ -623,28 +628,36 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                         ),
                       ),
                       SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: widget.availableColors.map((color) {
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                selectedColor = color;
-                              });
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: color,
-                                border: selectedColor == color
-                                    ? Border.all(color: Colors.black, width: 3.0)
-                                    : null,
-                              ),
-                              width: 50,
-                              height: 50,
-                            ),
+                      Column(
+                        children: List.generate((widget.availableColors.length / 5).ceil(), (index) {
+                          int startIndex = index * 5;
+                          int endIndex = (index + 1) * 5;
+                          endIndex = endIndex > widget.availableColors.length ? widget.availableColors.length : endIndex;
+
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: widget.availableColors.sublist(startIndex, endIndex).map((color) {
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    selectedColor = color;
+                                  });
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: color,
+                                    border: selectedColor == color
+                                        ? Border.all(color: Colors.black, width: 3.0)
+                                        : null,
+                                  ),
+                                  width: 50,
+                                  height: 50,
+                                ),
+                              );
+                            }).toList(),
                           );
-                        }).toList(),
+                        }),
                       ),
                     ],
                   ),
@@ -719,28 +732,36 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                         Image.file(File(imageFile!.path), height: 100),
                       ],
                       SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: widget.availableColors.map((color) {
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                selectedColor = color;
-                              });
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: color,
-                                border: selectedColor == color
-                                    ? Border.all(color: Colors.black, width: 3.0)
-                                    : null,
-                              ),
-                              width: 50,
-                              height: 50,
-                            ),
+                      Column(
+                        children: List.generate((widget.availableColors.length / 5).ceil(), (index) {
+                          int startIndex = index * 5;
+                          int endIndex = (index + 1) * 5;
+                          endIndex = endIndex > widget.availableColors.length ? widget.availableColors.length : endIndex;
+
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: widget.availableColors.sublist(startIndex, endIndex).map((color) {
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    selectedColor = color;
+                                  });
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: color,
+                                    border: selectedColor == color
+                                        ? Border.all(color: Colors.black, width: 3.0)
+                                        : null,
+                                  ),
+                                  width: 50,
+                                  height: 50,
+                                ),
+                              );
+                            }).toList(),
                           );
-                        }).toList(),
+                        }),
                       ),
                     ],
                   ),
@@ -855,28 +876,36 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                         ),
                       ),
                       SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: widget.availableColors.map((color) {
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                selectedColor = color;
-                              });
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: color,
-                                border: selectedColor == color
-                                    ? Border.all(color: Colors.black, width: 3.0)
-                                    : null,
-                              ),
-                              width: 50,
-                              height: 50,
-                            ),
+                      Column(
+                        children: List.generate((widget.availableColors.length / 5).ceil(), (index) {
+                          int startIndex = index * 5;
+                          int endIndex = (index + 1) * 5;
+                          endIndex = endIndex > widget.availableColors.length ? widget.availableColors.length : endIndex;
+
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: widget.availableColors.sublist(startIndex, endIndex).map((color) {
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    selectedColor = color;
+                                  });
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: color,
+                                    border: selectedColor == color
+                                        ? Border.all(color: Colors.black, width: 3.0)
+                                        : null,
+                                  ),
+                                  width: 50,
+                                  height: 50,
+                                ),
+                              );
+                            }).toList(),
                           );
-                        }).toList(),
+                        }),
                       ),
                     ],
                   ),
@@ -1010,7 +1039,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
 
   Widget _createSampleLinkWidgetPreview(double r, double availableWidth) {
     final containerWidth = availableWidth;
-    final containerHeight = containerWidth / (r*0.8);
+    final containerHeight = containerWidth / (r * 0.8);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -1085,7 +1114,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
 
   Widget _createSampleWidget2Preview(double r, double availableWidth) {
     final containerWidth = availableWidth;
-    final containerHeight = containerWidth / (r*0.8);
+    final containerHeight = containerWidth / (r * 0.8);
 
     return Column(
       children: [
@@ -1128,33 +1157,31 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Flexible(
-                      child:Transform.scale(
-                        scale: 0.6,
-                        child: Checkbox(
-
-                          value: false,
-                          onChanged: null,
-                        ),
-                      )
+                        child: Transform.scale(
+                          scale: 0.6,
+                          child: Checkbox(
+                            value: false,
+                            onChanged: null,
+                          ),
+                        )
                     ),
                     Flexible(
                         child: Text(
-                      'Sample Task 1',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: Colors.white,
-                        decoration: TextDecoration.none,
-                      ),
-                    )),
+                          'Sample Task 1',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.white,
+                            decoration: TextDecoration.none,
+                          ),
+                        )),
                   ],
                 ),
                 Row(
                   children: [
                     Flexible(
-                        child:Transform.scale(
+                        child: Transform.scale(
                           scale: 0.6,
                           child: Checkbox(
-
                             value: true,
                             onChanged: null,
                           ),
@@ -1180,7 +1207,6 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
       ],
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -1280,7 +1306,13 @@ void main() {
         // Update the widget data list
       },
       widgetSize: Size(200, 200), // Provide an initial size
-      availableColors: [Colors.purple, Colors.blue, Colors.red],
+      availableColors: [
+        Color(0xff6194bf),
+        Color(0xfff19f58),
+        Color(0xffd15e5e),
+        Color(0xffa0c6c2),
+        Color(0xff81b293),
+      ],
     ),
   ));
 }
