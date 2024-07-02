@@ -475,7 +475,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
   void _addWidget(double r) async {
     final double ratio = r; // width/height
     final double width = MediaQuery.of(context).size.width * 0.9;
-    final double height = MediaQuery.of(context).size.height * 0.5; // Adjust height as needed
+    final double height = MediaQuery.of(context).size.height * 0.51; // Adjust height as needed
 
     int? selectedWidgetNumber = await showDialog<int>(
       context: context,
@@ -494,7 +494,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                     crossAxisCount: 2, // Number of columns
                     mainAxisSpacing: 10,
                     crossAxisSpacing: 10,
-                    childAspectRatio: 0.63, // Adjust the aspect ratio
+                    childAspectRatio: 0.62, // Adjust the aspect ratio
                     children: [
                       GestureDetector(
                         onTap: () {

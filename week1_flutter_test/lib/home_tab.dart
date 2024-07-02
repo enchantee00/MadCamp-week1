@@ -362,30 +362,44 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ),
                       ),
-                      SizedBox(width: 10.0),
+                      SizedBox(width: 12.0),
                       Expanded(
                         flex: 2,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(height:MediaQuery.of(context).size.height*0.04),
-                            Text(infoMap['name'] ?? 'Unknown',
-                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                            SizedBox(height: 8),
-                            Text('학번 : ${infoMap['student_number'] ?? 'Unknown'}'),
-                            SizedBox(height: 8),
-                            Text('학과 : ${infoMap['department'] ?? 'Unknown'}'),
-                            SizedBox(height: 8),
+                            Row(
+                                children: [
+                                  SizedBox(width: 8.0),
+                                  Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children : [SizedBox(height:MediaQuery.of(context).size.height*0.04),
+                                      Text(infoMap['name'] ?? 'Unknown',
+                                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                                      SizedBox(height: 8),
+                                      Text('학번 : ${infoMap['student_number'] ?? 'Unknown'}'),
+                                      SizedBox(height: 8),
+                                      Text('학과 : ${infoMap['department'] ?? 'Unknown'}'),
+                                      SizedBox(height: 8),]
+                                  ),
+                                ]
+                            ),
                             Row(
                               children: [
                                 OutlinedButton(
                                   onPressed: _viewProfile,
-                                  child: Text('View More'),
+                                  child: Text('View',style: TextStyle(fontSize: 15),),
+                                  style: OutlinedButton.styleFrom(
+                                    minimumSize: Size(MediaQuery.of(context).size.width*0.27, 30), // Set the width and height here
+                                  ),
                                 ),
                                 SizedBox(width: 8),
                                 OutlinedButton(
                                   onPressed: _editProfile,
-                                  child: Text('Edit Profile'),
+                                  child: Text('Edit',style: TextStyle(fontSize: 15),),
+                                  style: OutlinedButton.styleFrom(
+                                    minimumSize: Size(MediaQuery.of(context).size.width*0.27, 30), // Set the width and height here
+                                  ),
                                 ),
                               ],
                             ),

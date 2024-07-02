@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-//Profile Edit Page
-
 class ProfileEditPage extends StatefulWidget {
   final Map<String, String> infos;
 
@@ -72,38 +70,40 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            GestureDetector(
-              onTap: _pickImage,
-              child: _image == null
-                  ? CircleAvatar(
-                radius: 70,
-                child: Icon(Icons.add_a_photo, size: 50),
-              )
-                  : CircleAvatar(
-                radius: 70,
-                backgroundImage: FileImage(_image!),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              GestureDetector(
+                onTap: _pickImage,
+                child: _image == null
+                    ? CircleAvatar(
+                  radius: 70,
+                  child: Icon(Icons.add_a_photo, size: 50),
+                )
+                    : CircleAvatar(
+                  radius: 70,
+                  backgroundImage: FileImage(_image!),
+                ),
               ),
-            ),
-            SizedBox(height: 16),
-            TextField(
-              controller: nameController,
-              decoration: InputDecoration(labelText: 'Name'),
-            ),
-            SizedBox(height: 16),
-            TextField(
-              controller: studentNumberController,
-              decoration: InputDecoration(labelText: 'Student Number'),
-            ),
-            SizedBox(height: 16),
-            TextField(
-              controller: departmentController,
-              decoration: InputDecoration(labelText: 'Department'),
-            ),
-          ],
+              SizedBox(height: 16),
+              TextField(
+                controller: nameController,
+                decoration: InputDecoration(labelText: 'Name'),
+              ),
+              SizedBox(height: 16),
+              TextField(
+                controller: studentNumberController,
+                decoration: InputDecoration(labelText: 'Student Number'),
+              ),
+              SizedBox(height: 16),
+              TextField(
+                controller: departmentController,
+                decoration: InputDecoration(labelText: 'Department'),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -113,7 +113,6 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
 ////////////////////////////////////////////////////////////
 // View Profile Page ///////////////////////////////////////
 ////////////////////////////////////////////////////////////
-
 
 class ProfileViewPage extends StatefulWidget {
   final Map<String, String> infos;
@@ -145,7 +144,7 @@ class _ProfileViewPageState extends State<ProfileViewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title : Text(''),
+        title: Text(''),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -160,17 +159,17 @@ class _ProfileViewPageState extends State<ProfileViewPage> {
               radius: 100,
               backgroundImage: FileImage(_image!),
             ),
-            SizedBox(height: 30,),
+            SizedBox(height: 30),
             Center(
-              child: Text(widget.infos['name'] ?? 'Unknown',style:TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
+              child: Text(widget.infos['name'] ?? 'Unknown', style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
             ),
-            SizedBox(height: 15,),
+            SizedBox(height: 15),
             Center(
-              child: Text(widget.infos['student_number'] ?? 'Unknown',style: TextStyle(fontSize: 25),),
+              child: Text(widget.infos['student_number'] ?? 'Unknown', style: TextStyle(fontSize: 25)),
             ),
             Center(
-              child: Text(widget.infos['department'] ?? 'Unknown',style: TextStyle(fontSize: 25),),
-            )
+              child: Text(widget.infos['department'] ?? 'Unknown', style: TextStyle(fontSize: 25)),
+            ),
           ],
         ),
       ),
