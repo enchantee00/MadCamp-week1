@@ -34,7 +34,9 @@ class _CameraScreenState extends State<CameraScreen> {
           if (snapshot.connectionState == ConnectionState.done) {
             return Stack(
               children: [
-                CameraPreview(widget.cameraService.controller!),
+                Positioned.fill(
+                  child: CameraPreview(widget.cameraService.controller!),
+                ),
                 Positioned(
                   bottom: 20,
                   left: MediaQuery.of(context).size.width / 2 - 30,
