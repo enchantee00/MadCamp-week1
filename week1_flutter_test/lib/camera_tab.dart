@@ -111,7 +111,7 @@ class _CameraTabState extends State<CameraTab> {
 
     // Flask 서버의 IP 주소를 사용
     final response = await http.post(
-      Uri.parse('http://10.125.68.136:5000/process_image'),
+      Uri.parse('http://143.248.219.144:5000/process_image'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'image': imageBase64}),
     );
