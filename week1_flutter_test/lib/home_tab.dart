@@ -12,6 +12,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'gallery_tab.dart';
 
 class HomeTab extends StatelessWidget {
   final List<CameraDescription> cameras;
@@ -54,6 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final CarouselController _controller = CarouselController();
   int _cur = 0;
   final GlobalKey _carouselKey = GlobalKey();
+  final GlobalKey<GalleryTabState> _galleryTabKey = GlobalKey<GalleryTabState>(); // 추가된 부분
   Size? widgetSize;
   final List<Color> availableColors = [Colors.red, Colors.blue, Colors.purple];
 
@@ -200,17 +202,24 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _showCameraScreen(BuildContext context) {
+  void _showCameraScreen(BuildContext context, bool performOCR) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => CameraScreen(
           cameras: widget.cameras,
           cameraService: cameraService,
+          performOCR: performOCR,
+          onPictureTaken: (String path) {
+            if (!performOCR) {
+              _galleryTabKey.currentState?.addImage(path);
+            }
+          },
         ),
       ),
     );
   }
+
 
   void _showChoiceDialog(BuildContext parentContext) {
     showDialog(
@@ -224,7 +233,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ElevatedButton.icon(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  _showCameraScreen(parentContext);
+                  _showCameraScreen(parentContext, true);
                 },
                 icon: Icon(Icons.camera_alt),
                 label: Text("촬영"),
@@ -320,6 +329,7 @@ class _MyHomePageState extends State<MyHomePage> {
             label: 'Add to Gallery',
             onTap: () {
               // Add your camera functionality here
+              _showCameraScreen(context, false);
             },
           ),
           SpeedDialChild(

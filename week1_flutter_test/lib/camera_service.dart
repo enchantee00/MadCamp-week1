@@ -29,7 +29,7 @@ class CameraService {
     controller = null;
   }
 
-  Future<void> takePicture(BuildContext context) async {
+  Future<String?> takePicture(BuildContext context, {bool performOCR = false}) async {
     try {
       await initializeControllerFuture;
       final Directory appDir = await getApplicationDocumentsDirectory();
@@ -45,29 +45,36 @@ class CameraService {
 
       this.imagePath = imagePath;
 
-      showLoadingDialog(context);
+      if (performOCR) {
+        showLoadingDialog(context);
 
-      final processedText = await processImage(imagePath);
-      Navigator.of(context, rootNavigator: true).pop(); // 로딩 팝업 닫기
+        final processedText = await processImage(imagePath);
+        Navigator.of(context, rootNavigator: true).pop(); // 로딩 팝업 닫기
 
-      if (processedText != null) {
-        showOCRResultDialog(context, processedText);
-      } else {
-        _showErrorDialog(context, 'Failed to detect text in the image.');
+        if (processedText != null) {
+          showOCRResultDialog(context, processedText);
+        } else {
+          showErrorDialog(context, 'Failed to detect text in the image.');
+        }
       }
 
+      return imagePath;
     } catch (e) {
       Navigator.of(context, rootNavigator: true).pop(); // 로딩 팝업 닫기
-      _showErrorDialog(context, 'An error occurred: $e');
+      showErrorDialog(context, 'An error occurred: $e');
+      return null;
     }
   }
 
-  Future<String?> processImage(String imagePath) async {
+
+  Future<String?> processImage(String? imagePath) async {
+    if (imagePath == null) return null;
+
     final bytes = File(imagePath).readAsBytesSync();
     final imageBase64 = base64Encode(bytes);
 
     final response = await http.post(
-      Uri.parse('http://143.248.219.154:5000/process_image'),
+      Uri.parse('http://10.125.68.136:5000/process_image'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'image': imageBase64}),
     );
@@ -80,6 +87,7 @@ class CameraService {
       return null;
     }
   }
+
 
   void showLoadingDialog(BuildContext context) {
     showDialog(
@@ -120,6 +128,26 @@ class CameraService {
               onPressed: () {
                 Navigator.of(context).pop();
                 _showContactEditDialog(context, name, studentId);
+              },
+              child: Text("확인"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Error"),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop();
               },
               child: Text("확인"),
             ),
@@ -220,26 +248,6 @@ class CameraService {
                 Navigator.of(context, rootNavigator: true).pop();
               },
               child: Text("OK"),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showErrorDialog(BuildContext context, String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Error"),
-          content: Text(message),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context, rootNavigator: true).pop();
-              },
-              child: Text("확인"),
             ),
           ],
         );
