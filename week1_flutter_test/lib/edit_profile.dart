@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class ProfileEditPage extends StatefulWidget {
   final Map<String, String> infos;
@@ -46,7 +48,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
     }
   }
 
-  void _saveProfile() {
+  Future<void> _saveProfile() async {
     setState(() {
       widget.infos['name'] = nameController.text;
       widget.infos['student_number'] = studentNumberController.text;
@@ -55,7 +57,12 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
         widget.infos['imagePath'] = _image!.path;
       }
     });
-    Navigator.pop(context, widget.infos); // Returning the updated infos back to the HomePage
+
+    // SharedPreferences에 저장
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('profileInfo', json.encode(widget.infos));
+
+    Navigator.pop(context, widget.infos); // 업데이트된 정보를 HomePage로 반환
   }
 
   @override
