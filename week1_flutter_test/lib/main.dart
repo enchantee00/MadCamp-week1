@@ -40,6 +40,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final GlobalKey<GalleryTabState> _galleryTabKey = GlobalKey<GalleryTabState>();
+  final PageStorageBucket _bucket = PageStorageBucket();
 
   @override
   void initState() {
@@ -57,14 +58,17 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       appBar: AppBar(
         title: Text('Camera App'),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          ContactsTab(),
-          CameraTab(cameras: cameras, onPictureTaken: _onPictureTaken),
-          GalleryTab(key: _galleryTabKey),
-          HomeTab(),
-        ],
+      body: PageStorage(
+        bucket: _bucket,
+        child: TabBarView(
+          controller: _tabController,
+          children: [
+            ContactsTab(),
+            CameraTab(cameras: cameras, onPictureTaken: _onPictureTaken),
+            GalleryTab(key: _galleryTabKey),
+            HomeTab(),
+          ],
+        ),
       ),
       bottomNavigationBar: TabBar(
         controller: _tabController,

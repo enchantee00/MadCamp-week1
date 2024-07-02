@@ -7,6 +7,8 @@ import 'edit_profile.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class HomeTab extends StatelessWidget {
   @override
@@ -36,20 +38,39 @@ class _MyHomePageState extends State<MyHomePage> {
     'department': '전산학부',
   };
 
-  List<Map<String, dynamic>> widgetDataList = [
-    {
-      'type': 'Link',
-      'links': [
-        {'url': 'https://iam2.kaist.ac.kr/#/commonLogin?sso_type=S&param_id=aP1ZtAnnH5y', 'summary': 'KAIST Portal'}
-      ],
-      'color': Colors.red.value.toString(),
-    },
-  ];
+  List<Map<String, dynamic>> widgetDataList = [];
 
   final CarouselController _controller = CarouselController();
   int _cur = 0;
   final GlobalKey _carouselKey = GlobalKey();
   Size? widgetSize;
+  final List<Color> availableColors = [Colors.red, Colors.blue, Colors.purple];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCarouselPosition().then((_) {
+      _loadWidgetData();
+      _getWidgetSize();
+      _moveCarouselToSavedPosition();
+    });
+  }
+
+  Future<void> _loadCarouselPosition() async {
+    final prefs = await SharedPreferences.getInstance();
+    final int? position = prefs.getInt('carouselPosition');
+    if (position != null) {
+      setState(() {
+        _cur = position;
+      });
+    }
+  }
+
+  void _moveCarouselToSavedPosition() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _controller.animateToPage(_cur);
+    });
+  }
 
   void _editProfile() async {
     final updatedInfo = await Navigator.push(
@@ -93,26 +114,13 @@ class _MyHomePageState extends State<MyHomePage> {
           onUpdate: (newList) {
             setState(() {
               widgetDataList = newList;
+              _saveWidgetData(); // Save widget data when it's updated
             });
           },
           widgetSize: widgetSize!,
+          availableColors: availableColors,
         ),
       ),
-    );
-  }
-
-  void _openEditWidgetPopup(BuildContext context, Map<String, dynamic> widgetData, double width, double height) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: EditWidgetPopup(
-            widgetData: widgetData,
-            width: width,
-            height: height,
-          ),
-        );
-      },
     );
   }
 
@@ -125,10 +133,25 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _getWidgetSize();
+  Future<void> _loadWidgetData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final widgetDataString = prefs.getString('widgetDataList');
+    if (widgetDataString != null) {
+      setState(() {
+        widgetDataList = List<Map<String, dynamic>>.from(json.decode(widgetDataString));
+      });
+    }
+  }
+
+  Future<void> _saveWidgetData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final widgetDataString = json.encode(widgetDataList);
+    await prefs.setString('widgetDataList', widgetDataString);
+  }
+
+  Future<void> _saveCarouselPosition(int position) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('carouselPosition', position);
   }
 
   @override
@@ -167,130 +190,142 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 5.0, bottom: 5.0),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      width: 200,
-                      height: 200,
-                      child: imageFile == null
-                          ? CircleAvatar(
-                        radius: 50,
-                        child: Icon(Icons.person, size: 50),
-                      )
-                          : CircleAvatar(
-                        radius: 50,
-                        backgroundImage: FileImage(imageFile),
+      body: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 5.0, bottom: 5.0),
+            child: Column(
+              children: [
+                SizedBox(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          width: 200,
+                          height: 200,
+                          child: imageFile == null
+                              ? CircleAvatar(
+                            radius: 50,
+                            child: Icon(Icons.person, size: 50),
+                          )
+                              : CircleAvatar(
+                            radius: 50,
+                            backgroundImage: FileImage(imageFile),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  SizedBox(width: 10.0),
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(infoMap['name'] ?? 'Unknown',
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                        SizedBox(height: 8),
-                        Text('학번 : ${infoMap['student_number'] ?? 'Unknown'}'),
-                        SizedBox(height: 8),
-                        Text('학과 : ${infoMap['department'] ?? 'Unknown'}'),
-                        SizedBox(height: 8),
-                        Row(
+                      SizedBox(width: 10.0),
+                      Expanded(
+                        flex: 2,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            OutlinedButton(
-                              onPressed: _viewProfile,
-                              child: Text('View More'),
-                            ),
-                            SizedBox(width: 8),
-                            OutlinedButton(
-                              onPressed: _editProfile,
-                              child: Text('Edit Profile'),
+                            Text(infoMap['name'] ?? 'Unknown',
+                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                            SizedBox(height: 8),
+                            Text('학번 : ${infoMap['student_number'] ?? 'Unknown'}'),
+                            SizedBox(height: 8),
+                            Text('학과 : ${infoMap['department'] ?? 'Unknown'}'),
+                            SizedBox(height: 8),
+                            Row(
+                              children: [
+                                OutlinedButton(
+                                  onPressed: _viewProfile,
+                                  child: Text('View More'),
+                                ),
+                                SizedBox(width: 8),
+                                OutlinedButton(
+                                  onPressed: _editProfile,
+                                  child: Text('Edit Profile'),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              CarouselSlider(
-                key: _carouselKey,
-                carouselController: _controller,
-                options: CarouselOptions(
-                  height: MediaQuery.of(context).size.height * 0.48,
-                  enlargeCenterPage: true,
-                  autoPlay: false,
-                  aspectRatio: 16 / 9,
-                  autoPlayInterval: Duration(seconds: 3),
-                  autoPlayAnimationDuration: Duration(milliseconds: 800),
-                  autoPlayCurve: Curves.fastOutSlowIn,
-                  pauseAutoPlayOnTouch: true,
-                  enableInfiniteScroll: true,
-                  viewportFraction: 0.8,
-                  onPageChanged: ((index, reason) {
-                    setState(() {
-                      _cur = index;
-                    });
-                  }),
-                ),
-                items: widgetDataList.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final widgetData = entry.value;
-                  final type = widgetData['type'];
-                  final color = Color(int.parse(widgetData['color']));
-
-                  return Builder(
-                    builder: (BuildContext context) {
-                      return Container(
-                        key: ValueKey(index),
-                        width: MediaQuery.of(context).size.width,
-                        margin: EdgeInsets.symmetric(horizontal: 5.0),
-                        child: type == 'Link'
-                            ? _createUpdatedLinkWidget(
-                          List<Map<String, String>>.from(widgetData['links']),
-                          color,
-                          true,
-                        )
-                            : _createUpdatedImageWidget(
-                          widgetData['imagePath'],
-                          color,
-                        ),
-                      );
-                    },
-                  );
-                }).toList(),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: widgetDataList.asMap().entries.map((entry) {
-                  return Align(
-                    alignment: Alignment.bottomCenter,
-                    child: GestureDetector(
-                      onTap: () {
-                        _controller.animateToPage(entry.key);
-                      },
-                      child: Container(
-                        width: 12.0,
-                        height: 12.0,
-                        margin: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 4.0),
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: const Color.fromARGB(255, 133, 133, 133)
-                                .withOpacity(_cur == entry.key ? 0.9 : 0.4)),
                       ),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ],
+                    ],
+                  ),
+                ),
+                CarouselSlider(
+                  key: _carouselKey,
+                  carouselController: _controller,
+                  options: CarouselOptions(
+                    height: MediaQuery.of(context).size.height * 0.48,
+                    enlargeCenterPage: true,
+                    autoPlay: false,
+                    aspectRatio: 16 / 9,
+                    autoPlayInterval: Duration(seconds: 3),
+                    autoPlayAnimationDuration: Duration(milliseconds: 800),
+                    autoPlayCurve: Curves.fastOutSlowIn,
+                    pauseAutoPlayOnTouch: true,
+                    enableInfiniteScroll: true,
+                    viewportFraction: 0.8,
+                    initialPage: _cur, // Set the initial page
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        _cur = index;
+                        _saveCarouselPosition(index); // Save the current carousel position
+                      });
+                    },
+                  ),
+                  items: widgetDataList.asMap().entries.map((entry) {
+                    final index = entry.key;
+                    final widgetData = entry.value;
+                    final type = widgetData['type'];
+                    final color = Color(int.parse(widgetData['color']));
+
+                    return Builder(
+                      builder: (BuildContext context) {
+                        return Container(
+                          key: ValueKey(index),
+                          width: MediaQuery.of(context).size.width,
+                          margin: EdgeInsets.symmetric(horizontal: 5.0),
+                          child: type == 'Link'
+                              ? _createUpdatedLinkWidget(
+                            List<Map<String, String>>.from(widgetData['links']),
+                            color,
+                            true,
+                          )
+                              : type == 'Image'
+                              ? _createUpdatedImageWidget(
+                            widgetData['imagePath'],
+                            color,
+                          )
+                              : _createUpdatedTodoWidget(
+                            List<Map<String, dynamic>>.from(widgetData['todos']),
+                            color,
+                          ),
+                        );
+                      },
+                    );
+                  }).toList(),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: widgetDataList.asMap().entries.map((entry) {
+                    return Align(
+                      alignment: Alignment.bottomCenter,
+                      child: GestureDetector(
+                        onTap: () {
+                          _controller.animateToPage(entry.key);
+                        },
+                        child: Container(
+                          width: 12.0,
+                          height: 12.0,
+                          margin: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 4.0),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: const Color.fromARGB(255, 133, 133, 133)
+                                  .withOpacity(_cur == entry.key ? 0.9 : 0.4)),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -350,6 +385,50 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       child: Center(
         child: Image.file(File(imagePath), fit: BoxFit.cover),
+      ),
+    );
+  }
+
+  Widget _createUpdatedTodoWidget(List<Map<String, dynamic>> todoData, Color color) {
+    return Container(
+      margin: EdgeInsets.all(5.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        color: color,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: todoData.asMap().entries.map((entry) {
+          int index = entry.key;
+          Map<String, dynamic> data = entry.value;
+          return Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Row(
+              children: [
+                Checkbox(
+                  value: data['done'],
+                  onChanged: (bool? value) {
+                    setState(() {
+                      data['done'] = value!;
+                      widgetDataList[_cur]['todos'][index]['done'] = value;
+                      _saveWidgetData();
+                    });
+                  },
+                ),
+                Expanded(
+                  child: Text(
+                    data['task']!,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: data['done']! ? Colors.grey : Colors.white,
+                      decoration: data['done']! ? TextDecoration.lineThrough : TextDecoration.none,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }).toList(),
       ),
     );
   }

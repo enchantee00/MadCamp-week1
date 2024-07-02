@@ -55,7 +55,7 @@ def process_text_with_openai(text):
     """OpenAI API를 사용하여 텍스트를 처리"""
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {OPENAI_API_KEY}"
+        "Authorization": f"Bearer sk-proj-XsGpzKTvNuUJb2kWlQJkT3BlbkFJN7TRu6oaRIXVsDT9c06f"
     }
     
     payload = {

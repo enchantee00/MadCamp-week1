@@ -108,14 +108,14 @@ class _CameraTabState extends State<CameraTab> {
   Future<String?> _processImage(String imagePath) async {
     final bytes = File(imagePath).readAsBytesSync();
     final imageBase64 = base64Encode(bytes);
-
+    print("1");
     // Flask 서버의 IP 주소를 사용
     final response = await http.post(
-      Uri.parse('http://10.125.68.136:5000/process_image'),
+      Uri.parse('http://143.248.178.145:5000/process_image'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'image': imageBase64}),
     );
-
+    print("2");
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
       return responseData['processed_text'];
