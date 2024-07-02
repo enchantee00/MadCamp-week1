@@ -16,7 +16,7 @@ load_dotenv()
 # SERVICE_ACCOUNT_FILE = os.getenv('SERVICE_ACCOUNT_FILE')
 
 # Google Cloud Vision API 키 설정
-credentials = service_account.Credentials.from_service_account_file("proteinsequence-425706-3b26da6bd4ca.json")
+credentials = service_account.Credentials.from_service_account_file("proteinsequence-425706-316ddb998d60.json")
 
 # OpenAI API 키 설정 (정확한 키를 입력하세요)
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
