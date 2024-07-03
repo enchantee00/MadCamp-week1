@@ -311,6 +311,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: PreferredSize(
         child: AppBar(),
         preferredSize: Size.fromHeight(0),
@@ -318,7 +319,8 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: SpeedDial(
         icon: Icons.add,
         activeIcon: Icons.close,
-        backgroundColor: Color(0xffb5b5b5),
+        backgroundColor: Color(0xffa0c6c2),
+        foregroundColor: Color(0xff415250),
         children: [
           SpeedDialChild(
             child: Icon(Icons.settings),
@@ -361,14 +363,14 @@ class _MyHomePageState extends State<MyHomePage> {
                         Container(
                           height: MediaQuery.of(context).size.height*0.21,
                           decoration: BoxDecoration(
-                            color: Colors.white, // No color for the entire container
+                            color: Color(0xffffffff), // No color for the entire container
                             //border: Border.all(color: Colors.black),
                             borderRadius: BorderRadius.all(Radius.circular(10)),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.grey.withOpacity(0.3),
-                                spreadRadius: 1,
-                                blurRadius: 10,
+                                spreadRadius: 3,
+                                blurRadius: 5,
                                 offset: Offset(-3, 3), // changes position of shadow
                               ),
                             ],

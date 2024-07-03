@@ -258,6 +258,7 @@ class _ContactsTabState extends State<ContactsTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Column(
         children: [
           Padding(
