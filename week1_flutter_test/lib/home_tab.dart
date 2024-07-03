@@ -252,6 +252,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 icon: Icon(Icons.camera_alt),
                 label: Text("촬영", style: TextStyle(fontFamily: 'NanumSquareRound-regular')),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.white), // 버튼 배경 색상
+                  foregroundColor: MaterialStateProperty.all<Color>(Colors.black), // 버튼 텍스트 색상
+                )
               ),
               ElevatedButton.icon(
                 onPressed: () {
@@ -260,6 +264,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 icon: Icon(Icons.photo_library),
                 label: Text("불러오기", style: TextStyle(fontFamily: 'NanumSquareRound-regular')),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.white), // 버튼 배경 색상
+                  foregroundColor: MaterialStateProperty.all<Color>(Colors.black), // 버튼 텍스트 색상
+                )
               ),
             ],
           ),
