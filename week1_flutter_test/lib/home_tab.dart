@@ -450,11 +450,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children : [SizedBox(height:MediaQuery.of(context).size.height*0.02),
                                             Text(infoMap['name'] ?? 'Unknown',
-                                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                                                style: TextStyle(fontSize: 20, fontFamily: '어그로-light')),
                                             SizedBox(height: 4),
-                                            Text('학번 : ${infoMap['student_number'] ?? 'Unknown'}'),
+                                            Text('학번 : ${infoMap['student_number'] ?? 'Unknown'}', style: TextStyle(fontFamily: 'NanumSquareRound-regular')),
                                             SizedBox(height: 2),
-                                            Text('학과 : ${infoMap['department'] ?? 'Unknown'}'),
+                                            Text('학과 : ${infoMap['department'] ?? 'Unknown'}', style: TextStyle(fontFamily: 'NanumSquareRound-regular')),
                                             ]
                                         ),
                                       ]
