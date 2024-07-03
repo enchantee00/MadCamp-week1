@@ -318,6 +318,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: SpeedDial(
         icon: Icons.add,
         activeIcon: Icons.close,
+        backgroundColor: Color(0xffb5b5b5),
         children: [
           SpeedDialChild(
             child: Icon(Icons.settings),
@@ -350,74 +351,98 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
+                Container(
+                  width: MediaQuery.of(context).size.width*0.9,
                   height: MediaQuery.of(context).size.height*0.25,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: Container(
-                          width: 200,
-                          height: 200,
-                          child: imageFile == null
-                              ? CircleAvatar(
-                            radius: 50,
-                            child: Icon(Icons.person, size: 50),
-                          )
-                              : CircleAvatar(
-                            radius: 50,
-                            backgroundImage: FileImage(imageFile),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 10,),
+                        Container(
+                          height: MediaQuery.of(context).size.height*0.21,
+                          decoration: BoxDecoration(
+                            color: Colors.white, // No color for the entire container
+                            //border: Border.all(color: Colors.black),
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.3),
+                                spreadRadius: 1,
+                                blurRadius: 10,
+                                offset: Offset(-3, 3), // changes position of shadow
+                              ),
+                            ],
                           ),
-                        ),
-                      ),
-                      SizedBox(width: 12.0),
-                      Expanded(
-                        flex: 2,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                                children: [
-                                  SizedBox(width: 8.0),
-                                  Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children : [SizedBox(height:MediaQuery.of(context).size.height*0.04),
-                                      Text(infoMap['name'] ?? 'Unknown',
-                                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                                      SizedBox(height: 8),
-                                      Text('학번 : ${infoMap['student_number'] ?? 'Unknown'}'),
-                                      SizedBox(height: 8),
-                                      Text('학과 : ${infoMap['department'] ?? 'Unknown'}'),
-                                      SizedBox(height: 8),]
-                                  ),
-                                ]
+                            SizedBox(width: 12.0),
+                            Expanded(
+                              flex: 1,
+                              child: Container(
+                                width: 200,
+                                height: 200,
+                                child: imageFile == null
+                                    ? CircleAvatar(
+                                  radius: 40,
+                                  child: Icon(Icons.person, size: 50),
+                                )
+                                    : CircleAvatar(
+                                  radius: 40,
+                                  backgroundImage: FileImage(imageFile),
+                                ),
+                              ),
                             ),
-                            Row(
-                              children: [
-                                OutlinedButton(
-                                  onPressed: _viewProfile,
-                                  child: Text('View',style: TextStyle(fontSize: 15),),
-                                  style: OutlinedButton.styleFrom(
-                                    minimumSize: Size(MediaQuery.of(context).size.width*0.27, 30), // Set the width and height here
+                            SizedBox(width: 10.0),
+                            Expanded(
+                              flex: 2,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                      children: [
+                                        SizedBox(width: 8.0),
+                                        Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children : [SizedBox(height:MediaQuery.of(context).size.height*0.04),
+                                            Text(infoMap['name'] ?? 'Unknown',
+                                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                                            SizedBox(height: 8),
+                                            Text('학번 : ${infoMap['student_number'] ?? 'Unknown'}'),
+                                            SizedBox(height: 8),
+                                            Text('학과 : ${infoMap['department'] ?? 'Unknown'}'),
+                                            SizedBox(height: 8),]
+                                        ),
+                                      ]
                                   ),
-                                ),
-                                SizedBox(width: 8),
-                                OutlinedButton(
-                                  onPressed: _editProfile,
-                                  child: Text('Edit',style: TextStyle(fontSize: 15),),
-                                  style: OutlinedButton.styleFrom(
-                                    minimumSize: Size(MediaQuery.of(context).size.width*0.27, 30), // Set the width and height here
+                                  Row(
+                                    children: [
+                                      OutlinedButton(
+                                        onPressed: _viewProfile,
+                                        child: Text('View',style: TextStyle(fontSize: 15),),
+                                        style: OutlinedButton.styleFrom(
+                                          minimumSize: Size(MediaQuery.of(context).size.width*0.22, 25), // Set the width and height here
+                                        ),
+                                      ),
+                                      SizedBox(width: 8),
+                                      OutlinedButton(
+                                        onPressed: _editProfile,
+                                        child: Text('Edit',style: TextStyle(fontSize: 15),),
+                                        style: OutlinedButton.styleFrom(
+                                          minimumSize: Size(MediaQuery.of(context).size.width*0.22, 25), // Set the width and height here
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ],
-                        ),
-                      ),
-                    ],
-                  ),
+                        ),)
+                      ]
+                  )
                 ),
                 CarouselSlider(
                   key: _carouselKey,
@@ -450,6 +475,18 @@ class _MyHomePageState extends State<MyHomePage> {
                     return Builder(
                       builder: (BuildContext context) {
                         return Container(
+                          decoration: BoxDecoration(
+                            //color: Color(0x00000000),
+                            borderRadius: BorderRadius.only(topLeft: Radius.circular(15),topRight: Radius.circular(15)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.3),
+                                spreadRadius: 0.1,
+                                blurRadius: 10,
+                                offset: Offset(-3, 3), // changes position of shadow
+                              ),
+                            ],
+                          ),
                           key: ValueKey(index),
                           width: MediaQuery.of(context).size.width,
                           margin: EdgeInsets.symmetric(horizontal: 5.0),
