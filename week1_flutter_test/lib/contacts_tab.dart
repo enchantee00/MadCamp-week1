@@ -272,7 +272,7 @@ class _ContactsTabState extends State<ContactsTab> {
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: EdgeInsets.fromLTRB(16.0, 8.0, 8.0, 8.0), // 여기에서 왼쪽 패딩을 16.0으로 설정
             child: Row(
               children: [
                 Expanded(
