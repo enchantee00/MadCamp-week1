@@ -64,6 +64,8 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     _loadCarouselPosition().then((_) {
       _loadWidgetData();
+      _loadProfileInfo(); // 프로필 정보 불러오기 추가
+      _loadRecentImage(); // 최근 선택한 이미지 불러오기 추가
       _getWidgetSize();
       _moveCarouselToSavedPosition();
     });
@@ -88,16 +90,28 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  Future<void> _loadProfileInfo() async {
+    final prefs = await SharedPreferences.getInstance();
+    final profileInfoString = prefs.getString('profileInfo');
+    if (profileInfoString != null) {
+      setState(() {
+        infoMap = Map<String, String>.from(json.decode(profileInfoString));
+      });
+    }
+  }
+
+  Future<void> _loadRecentImage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final recentImagePath = prefs.getString('recentImagePath');
+    if (recentImagePath != null) {
+      setState(() {
+        _image = XFile(recentImagePath);
+      });
+    }
+  }
+
   // CameraService 인스턴스 생성
   late CameraService cameraService;
-
-  /*@override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _getWidgetSize());
-    cameraService = CameraService(cameras: widget.cameras);
-    cameraService.initializeCamera();
-  }*/
 
   @override
   void dispose() {
@@ -136,6 +150,10 @@ class _MyHomePageState extends State<MyHomePage> {
         _image = XFile(pickedFile.path);
       });
 
+      // 최근 선택한 이미지 경로를 SharedPreferences에 저장
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('recentImagePath', pickedFile.path);
+
       if (!mounted) return;
 
       // 다이얼로그를 표시할 때 상위 context를 사용합니다.
@@ -159,8 +177,6 @@ class _MyHomePageState extends State<MyHomePage> {
       print('No image selected.');
     }
   }
-
-
 
   void _showLoadingDialog(BuildContext context) {
     if (!mounted) return;
@@ -219,7 +235,6 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-
 
   void _showChoiceDialog(BuildContext parentContext) {
     showDialog(
@@ -300,7 +315,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> _saveCarouselPosition(int position) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('carouselPosition', position);
-
   }
 
   @override
