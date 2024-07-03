@@ -71,6 +71,7 @@ class _ImagePageState extends State<ImagePage> {
         backgroundColor: Color(0xfff6f6f6),
         title: Text(
           DateFormat('yyyy-MM-dd').format(widget.images[_currentIndex].lastModifiedSync()),
+          style: TextStyle(fontFamily: 'NanumSquareRound-bold'), // 입력 중인 텍스트의 폰트 스타일
         ),
       ),
       body: Stack(
@@ -153,8 +154,10 @@ class _ImagePageState extends State<ImagePage> {
                                   padding: EdgeInsets.all(16.0),
                                   children: imageInfo.entries.map((entry) {
                                     return ListTile(
-                                      title: Text(entry.key),
-                                      subtitle: Text(entry.value),
+                                      title: Text(entry.key, style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
+                                      ),
+                                      subtitle: Text(entry.value, style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
+                                      ),
                                     );
                                   }).toList(),
                                 );

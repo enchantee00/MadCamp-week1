@@ -96,11 +96,11 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> with WidgetsB
       });
       widget.onUpdate(widget.contact);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Contact updated successfully')),
+        SnackBar(content: Text('Contact updated successfully', style: TextStyle(fontFamily: 'NanumSquareRound-regular'))),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Permission to access contacts is denied')),
+        SnackBar(content: Text('Permission to access contacts is denied', style: TextStyle(fontFamily: 'NanumSquareRound-regular'))),
       );
     }
   }
@@ -169,10 +169,10 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> with WidgetsB
         leadingAvatar = CircleAvatar(backgroundImage: MemoryImage(avatar), radius: 50);
       } catch (e) {
         print("Invalid image data for contact ${widget.contact.displayName}: $e");
-        leadingAvatar = CircleAvatar(child: Text(widget.contact.initials()), radius: 50);
+        leadingAvatar = CircleAvatar(child: Text(widget.contact.initials(), style: TextStyle(fontFamily: 'NanumSquareRound-bold')), radius: 50);
       }
     } else {
-      leadingAvatar = CircleAvatar(child: Text(widget.contact.initials()), radius: 50);
+      leadingAvatar = CircleAvatar(child: Text(widget.contact.initials(), style: TextStyle(fontFamily: 'NanumSquareRound-bold')), radius: 50);
     }
 
     bool hasPhone = widget.contact.phones?.isNotEmpty == true;
@@ -187,7 +187,7 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> with WidgetsB
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
           backgroundColor: Color(0xfff6f6f6),
-          title: Text(_isEditing ? 'Edit Contact' : 'Contact Details'),
+          title: Text(_isEditing ? 'Edit Contact' : 'Contact Details', style: TextStyle(fontFamily: '어그로-light')),
           actions: [
             _isEditing
                 ? IconButton(
@@ -217,19 +217,19 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> with WidgetsB
                 _isEditing
                     ? TextField(
                   controller: _nameController,
-                  decoration: InputDecoration(labelText: 'Name'),
+                  decoration: InputDecoration(labelText: 'Name', labelStyle: TextStyle(fontFamily: 'NanumSquareRound-bold')),
                   enabled: false, // 이름 수정 비활성화
                 )
                     : Column(
                   children: [
                     Text(
                       widget.contact.displayName ?? 'No Name',
-                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 22, fontFamily: 'NanumSquareRound-bold'),
                     ),
                     SizedBox(height: 10),
                     Text(
                       widget.contact.company ?? 'No Student ID',
-                      style: TextStyle(fontSize: 18),
+                      style: TextStyle(fontSize: 18, fontFamily: 'NanumSquareRound-bold'),
                     ),
                   ],
                 ),
@@ -315,7 +315,7 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> with WidgetsB
                       leading: Icon(Icons.phone),
                       title: Text(
                         widget.contact.phones?.isNotEmpty == true ? widget.contact.phones!.first.value ?? 'No Phone' : 'No Phone',
-                        style: TextStyle(fontSize: 18),
+                        style: TextStyle(fontSize: 18, fontFamily: 'NanumSquareRound-regular'),
                       ),
                     ),
                   ),
@@ -327,7 +327,7 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> with WidgetsB
                       leading: Icon(Icons.email),
                       title: Text(
                         widget.contact.emails?.isNotEmpty == true ? widget.contact.emails!.first.value ?? 'No Email' : 'No Email',
-                        style: TextStyle(fontSize: 18),
+                        style: TextStyle(fontSize: 18, fontFamily: 'NanumSquareRound-regular'),
                       ),
                     ),
                   ),
@@ -343,7 +343,7 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> with WidgetsB
                         children: [
                           Text(
                             'Memo',
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            style: TextStyle(fontSize: 18, fontFamily: 'NanumSquareRound-bold'),
                           ),
                           SizedBox(height: 10),
                           TextField(
@@ -352,6 +352,7 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> with WidgetsB
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               hintText: 'Enter memo here...',
+                              labelStyle: TextStyle(fontFamily: 'NanumSquareRound-regular')
                             ),
                             onChanged: (text) {
                               _saveNote();
@@ -366,7 +367,7 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> with WidgetsB
                 _isEditing
                     ? TextField(
                   controller: _phoneController,
-                  decoration: InputDecoration(labelText: 'Phone'),
+                  decoration: InputDecoration(labelText: 'Phone', labelStyle: TextStyle(fontFamily: 'NanumSquareRound-bold')),
                   keyboardType: TextInputType.phone,
                 )
                     : SizedBox.shrink(),
@@ -374,7 +375,7 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> with WidgetsB
                 _isEditing
                     ? TextField(
                   controller: _emailController,
-                  decoration: InputDecoration(labelText: 'Email'),
+                  decoration: InputDecoration(labelText: 'Email', labelStyle: TextStyle(fontFamily: 'NanumSquareRound-bold')),
                   keyboardType: TextInputType.emailAddress,
                 )
                     : SizedBox.shrink(),
@@ -382,7 +383,7 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> with WidgetsB
                 _isEditing
                     ? TextField(
                   controller: _studentIdController,
-                  decoration: InputDecoration(labelText: 'Student ID'),
+                  decoration: InputDecoration(labelText: 'Student ID', labelStyle: TextStyle(fontFamily: 'NanumSquareRound-bold')),
                 )
                     : SizedBox.shrink(),
               ],

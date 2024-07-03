@@ -84,9 +84,35 @@ flutter:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
   assets:
-    - photo/bird.JPG
-    - photo/UNiV_logo.svg
-    - photo/splash_screen.png
+    - assets/photo/bird.JPG
+    - assets/photo/UNiV_logo.png
+    - assets/photo/UNiV_logo.svg
+    - assets/photo/splash_screen.png
+
+  fonts:
+    - family: NanumSquareRound-bold
+      fonts:
+        - asset: assets/fonts/NanumSquareRoundB.ttf
+    - family: NanumSquareRound-extrabold
+      fonts:
+        - asset: assets/fonts/NanumSquareRoundEB.ttf
+    - family: NanumSquareRound-light
+      fonts:
+        - asset: assets/fonts/NanumSquareRoundL.ttf
+    - family: NanumSquareRound-regular
+      fonts:
+        - asset: assets/fonts/NanumSquareRoundR.ttf
+
+
+    - family: 어그로-bold
+      fonts:
+        - asset: assets/fonts/SB 어그로 B.ttf
+    - family: 어그로-light
+      fonts:
+        - asset: assets/fonts/SB 어그로 L.ttf
+    - family: 어그로-medium
+      fonts:
+        - asset: assets/fonts/SB 어그로 M.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

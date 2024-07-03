@@ -39,7 +39,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
           children: [
             SizedBox(width: 10.0,),
             SvgPicture.asset(
-              'photo/UNiV_logo.svg', // Your SVG logo file path
+              'assets/photo/UNiV_logo.svg', // Your SVG logo file path
               height: 30,
             ),
           ],
@@ -76,6 +76,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                 ],
                 labelColor: Color(0xffa0c6c2),
                 unselectedLabelColor: Color(0xff415250),
+                labelStyle: TextStyle(fontFamily: 'NanumSquareRound-bold'),  // 선택된 탭의 텍스트 스타일
                 indicatorSize: TabBarIndicatorSize.tab,
                 indicator: UnderlineTabIndicator(
                   borderSide: BorderSide(color: Color(0xffa0c6c2), width: 2.0),
