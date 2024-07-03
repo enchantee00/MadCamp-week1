@@ -129,6 +129,7 @@ class GalleryTabState extends State<GalleryTab> {
     Map<String, List<File>> groupedImages = _groupByDate(images);
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           groupedImages.isEmpty

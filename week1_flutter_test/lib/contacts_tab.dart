@@ -173,6 +173,7 @@ class _ContactsTabState extends State<ContactsTab> {
       if (await Permission.contacts.request().isGranted) {
         await ContactsService.addContact(newContact);
         getAllContacts();
+        _showSuccessSnackbar('저장되었습니다');  // 추가된 부분
       }
     }
   }
@@ -186,6 +187,16 @@ class _ContactsTabState extends State<ContactsTab> {
       SnackBar(
         content: Text(message, style: TextStyle(fontFamily: 'NanumSquareRound-regular')),
         backgroundColor: Colors.red,
+      ),
+    );
+  }
+
+  void _showSuccessSnackbar(String message) {  // 추가된 부분
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 2),  // 스낵바가 2초 동안 표시됨
       ),
     );
   }
@@ -263,10 +274,11 @@ class _ContactsTabState extends State<ContactsTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: EdgeInsets.fromLTRB(16.0, 8.0, 8.0, 8.0), // 여기에서 왼쪽 패딩을 16.0으로 설정
             child: Row(
               children: [
                 Expanded(

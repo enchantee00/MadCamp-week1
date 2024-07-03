@@ -3,6 +3,7 @@ import 'package:camera/camera.dart';
 import 'contacts_tab.dart';
 import 'gallery_tab.dart';
 import 'home_tab.dart';
+import 'package:flutter_svg/flutter_svg.dart'; // Add this import
 
 class MainScreen extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -30,8 +31,19 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xfff6f6f6),
       appBar: AppBar(
-        title: Text('SVG logo')
+        backgroundColor: Colors.transparent,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SizedBox(width: 10.0,),
+            SvgPicture.asset(
+              'photo/UNiV_logo.svg', // Your SVG logo file path
+              height: 30,
+            ),
+          ],
+        )
       ),
       body: TabBarView(
         controller: _tabController,
@@ -41,19 +53,33 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
           GalleryTab(key: _galleryTabKey),
         ],
       ),
-      bottomNavigationBar: TabBar(
-        controller: _tabController,
-        tabs: [
-          Tab(icon: Icon(Icons.contacts), text: 'Contacts'),
-          Tab(icon: Icon(Icons.home_filled), text: 'Home'),
-          Tab(icon: Icon(Icons.photo), text: 'Gallery'),
-        ],
-        labelColor: Colors.blue,
-        unselectedLabelColor: Colors.grey,
-        labelStyle: TextStyle(fontFamily: 'NanumSquareRound-bold'),  // 선택된 탭의 텍스트 스타일
-        indicatorSize: TabBarIndicatorSize.tab,
-        indicatorColor: Colors.blue,
-      ),
+      bottomNavigationBar: Container(
+              decoration: BoxDecoration(
+                color: Color(0xffffffff),
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(15),topRight: Radius.circular(15)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 8,
+                    blurRadius: 10,
+                    offset: Offset(0, 3), // changes position of shadow
+                  ),
+                ],
+              ),
+              child: TabBar(
+                controller: _tabController,
+                tabs: [
+                  Tab(icon: Icon(Icons.contacts), text: 'Contacts'),
+                  Tab(icon: Icon(Icons.home_filled), text: 'Home'),
+                  Tab(icon: Icon(Icons.photo), text: 'Gallery'),
+                ],
+                labelColor: Color(0xffa0c6c2),
+                unselectedLabelColor: Color(0xff415250),
+                labelStyle: TextStyle(fontFamily: 'NanumSquareRound-bold'),  // 선택된 탭의 텍스트 스타일
+                indicatorSize: TabBarIndicatorSize.tab,
+                indicatorColor: Colors.blue,
+              )
+        ,)
     );
   }
 }
