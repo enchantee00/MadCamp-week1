@@ -422,22 +422,23 @@ class _MyHomePageState extends State<MyHomePage> {
                                         SizedBox(width: 8.0),
                                         Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
-                                            children : [SizedBox(height:MediaQuery.of(context).size.height*0.04),
+                                            children : [SizedBox(height:MediaQuery.of(context).size.height*0.02),
                                             Text(infoMap['name'] ?? 'Unknown',
                                                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                                            SizedBox(height: 8),
+                                            SizedBox(height: 4),
                                             Text('학번 : ${infoMap['student_number'] ?? 'Unknown'}'),
-                                            SizedBox(height: 8),
+                                            SizedBox(height: 2),
                                             Text('학과 : ${infoMap['department'] ?? 'Unknown'}'),
-                                            SizedBox(height: 8),]
+                                            ]
                                         ),
                                       ]
                                   ),
                                   Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       OutlinedButton(
                                         onPressed: _viewProfile,
-                                        child: Text('View',style: TextStyle(fontSize: 15),),
+                                        child: Text('View',style: TextStyle(fontSize: 15, color: Colors.black),),
                                         style: OutlinedButton.styleFrom(
                                           minimumSize: Size(MediaQuery.of(context).size.width*0.22, 25), // Set the width and height here
                                         ),
@@ -445,7 +446,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       SizedBox(width: 8),
                                       OutlinedButton(
                                         onPressed: _editProfile,
-                                        child: Text('Edit',style: TextStyle(fontSize: 15),),
+                                        child: Text('Edit',style: TextStyle(fontSize: 15, color: Colors.black),),
                                         style: OutlinedButton.styleFrom(
                                           minimumSize: Size(MediaQuery.of(context).size.width*0.22, 25), // Set the width and height here
                                         ),

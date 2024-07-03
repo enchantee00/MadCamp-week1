@@ -306,12 +306,12 @@ class _EditWidgetPopupState extends State<EditWidgetPopup> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text('Add New Link'),
+                      title: Text('Add New Link', style: TextStyle(color: Colors.black)),
                       content: Column(
                         children: [
                           TextField(
                             controller: urlController,
-                            decoration: InputDecoration(labelText: 'URL'),
+                            decoration: InputDecoration(labelText: 'URL', ),
                           ),
                           TextField(
                             controller: summaryController,
@@ -325,20 +325,20 @@ class _EditWidgetPopupState extends State<EditWidgetPopup> {
                             _addNewLink(urlController.text, summaryController.text);
                             Navigator.of(context).pop();
                           },
-                          child: Text('Add'),
+                          child: Text('Add', style: TextStyle(color: Colors.black)),
                         ),
                       ],
                     );
                   },
                 );
               },
-              child: Text('Add Link'),
+              child: Text('Add Link', style: TextStyle(color: Colors.black)),
             ),
           ],
           if (type == 'Image') ...[
             ElevatedButton(
               onPressed: _pickImage,
-              child: Text('Change Image'),
+              child: Text('Change Image',style: TextStyle(color: Colors.black),),
             ),
           ],
           if (type == 'TODO') ...[
@@ -383,14 +383,14 @@ class _EditWidgetPopupState extends State<EditWidgetPopup> {
                             _addNewTodoTask(todoController.text);
                             Navigator.of(context).pop();
                           },
-                          child: Text('Add'),
+                          child: Text('Add',style: TextStyle(color: Colors.black)),
                         ),
                       ],
                     );
                   },
                 );
               },
-              child: Text('Add Task'),
+              child: Text('Add Task',style: TextStyle(color: Colors.black)),
             ),
           ],
           Column(
@@ -416,8 +416,8 @@ class _EditWidgetPopupState extends State<EditWidgetPopup> {
                             ? Border.all(color: Colors.black, width: 3.0)
                             : null,
                       ),
-                      width: 50,
-                      height: 50,
+                      width: 30,
+                      height: 30,
                     ),
                   );
                 }).toList(),
@@ -431,11 +431,11 @@ class _EditWidgetPopupState extends State<EditWidgetPopup> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text('Cancel'),
+                child: Text('Cancel', style: TextStyle(color: Colors.black)),
               ),
               TextButton(
                 onPressed: _saveChanges,
-                child: Text('Save'),
+                child: Text('Save', style: TextStyle(color: Colors.black)),
               ),
             ],
           ),
@@ -594,7 +594,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                                 SnackBar(content: Text('Please enter a valid URL and summary')));
                           }
                         },
-                        child: Text('Add Link'),
+                        child: Text('Add Link',style: TextStyle(color: Colors.black)),
                       ),
                       SizedBox(height: 20),
                       Text(
@@ -651,8 +651,8 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                                         ? Border.all(color: Colors.black, width: 3.0)
                                         : null,
                                   ),
-                                  width: 50,
-                                  height: 50,
+                                  width: 30,
+                                  height: 30,
                                 ),
                               );
                             }).toList(),
@@ -668,13 +668,13 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                   onPressed: () {
                     Navigator.of(context).pop(false);
                   },
-                  child: Text('Cancel'),
+                  child: Text('Cancel',style: TextStyle(color: Colors.black)),
                 ),
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop(true);
                   },
-                  child: Text('Save'),
+                  child: Text('Save',style: TextStyle(color: Colors.black)),
                 ),
               ],
             );
@@ -725,7 +725,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                             });
                           }
                         },
-                        child: Text('Pick Image'),
+                        child: Text('Pick Image',style: TextStyle(color: Colors.black) ),
                       ),
                       if (imageFile != null) ...[
                         SizedBox(height: 16),
@@ -755,8 +755,8 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                                         ? Border.all(color: Colors.black, width: 3.0)
                                         : null,
                                   ),
-                                  width: 50,
-                                  height: 50,
+                                  width: 30,
+                                  height: 30,
                                 ),
                               );
                             }).toList(),
@@ -772,13 +772,13 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                   onPressed: () {
                     Navigator.of(context).pop(false);
                   },
-                  child: Text('Cancel'),
+                  child: Text('Cancel',style: TextStyle(color: Colors.black)),
                 ),
                 TextButton(
                   onPressed: imageFile == null ? null : () {
                     Navigator.of(context).pop(true);
                   },
-                  child: Text('Save'),
+                  child: Text('Save',style: TextStyle(color: Colors.black)),
                 ),
               ],
             );
@@ -842,7 +842,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                                 SnackBar(content: Text('Please enter a task')));
                           }
                         },
-                        child: Text('Add Task'),
+                        child: Text('Add Task',style: TextStyle(color: Colors.black)),
                       ),
                       SizedBox(height: 20),
                       Text(
@@ -899,8 +899,8 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                                         ? Border.all(color: Colors.black, width: 3.0)
                                         : null,
                                   ),
-                                  width: 50,
-                                  height: 50,
+                                  width: 30,
+                                  height: 30,
                                 ),
                               );
                             }).toList(),
@@ -916,13 +916,13 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                   onPressed: () {
                     Navigator.of(context).pop(false);
                   },
-                  child: Text('Cancel'),
+                  child: Text('Cancel',style: TextStyle(color: Colors.black)),
                 ),
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop(true);
                   },
-                  child: Text('Save'),
+                  child: Text('Save',style: TextStyle(color: Colors.black)),
                 ),
               ],
             );
@@ -1211,7 +1211,9 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xfff6f6f6),
       appBar: AppBar(
+        backgroundColor: Color(0xfff6f6f6),
         title: Text('Widgets in Grid'),
         actions: [
           IconButton(

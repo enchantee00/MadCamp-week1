@@ -66,7 +66,9 @@ class _ImagePageState extends State<ImagePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xfff6f6f6),
       appBar: AppBar(
+        backgroundColor: Color(0xfff6f6f6),
         title: Text(
           DateFormat('yyyy-MM-dd').format(widget.images[_currentIndex].lastModifiedSync()),
         ),
