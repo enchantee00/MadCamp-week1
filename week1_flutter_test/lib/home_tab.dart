@@ -189,7 +189,7 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
               CircularProgressIndicator(),
               SizedBox(width: 20),
-              Text("로딩 중..."),
+              Text("로딩 중...", style: TextStyle(fontFamily: 'NanumSquareRound-regular')),
             ],
           ),
         );
@@ -203,14 +203,14 @@ class _MyHomePageState extends State<MyHomePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Error"),
+          title: Text("Error", style: TextStyle(fontFamily: 'NanumSquareRound-regular')),
           content: Text(message),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("확인"),
+              child: Text("확인", style: TextStyle(fontFamily: 'NanumSquareRound-regular')),
             ),
           ],
         );
@@ -241,7 +241,7 @@ class _MyHomePageState extends State<MyHomePage> {
       context: parentContext,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("옵션 선택"),
+          title: Text("옵션 선택", style: TextStyle(fontFamily: 'NanumSquareRound-bold')),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -251,7 +251,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   _showCameraScreen(parentContext, true);
                 },
                 icon: Icon(Icons.camera_alt),
-                label: Text("촬영"),
+                label: Text("촬영", style: TextStyle(fontFamily: 'NanumSquareRound-regular')),
               ),
               ElevatedButton.icon(
                 onPressed: () {
@@ -259,7 +259,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   _pickImage(parentContext);
                 },
                 icon: Icon(Icons.photo_library),
-                label: Text("불러오기"),
+                label: Text("불러오기", style: TextStyle(fontFamily: 'NanumSquareRound-regular')),
               ),
             ],
           ),
@@ -335,12 +335,24 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           SpeedDialChild(
             child: Icon(Icons.settings),
-            label: 'Widget Settings',
+            labelWidget: Padding(
+              padding: const EdgeInsets.only(right: 10.0),
+              child: Text(
+                'Widget Settings',
+                style: TextStyle(fontFamily: 'NanumSquareRound-bold'),
+              ),
+            ),
             onTap: () => _navigateToWidgetsGridScreen(context),
           ),
           SpeedDialChild(
             child: Icon(Icons.add_a_photo),
-            label: 'Add to Gallery',
+            labelWidget: Padding(
+              padding: const EdgeInsets.only(right: 10.0),
+              child: Text(
+                'Add to Gallery',
+                style: TextStyle(fontFamily: 'NanumSquareRound-bold'),
+              ),
+            ),
             onTap: () {
               // Add your camera functionality here
               _showCameraScreen(context, false);
@@ -348,7 +360,13 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           SpeedDialChild(
             child: Icon(Icons.camera_front),
-            label: 'Add to Contacts',
+            labelWidget: Padding(
+              padding: const EdgeInsets.only(right: 10.0),
+              child: Text(
+                'Add to Contacts',
+                style: TextStyle(fontFamily: 'NanumSquareRound-bold'),
+              ),
+            ),
             onTap: () {
               // 옵션 선택 팝업 표시
               _showChoiceDialog(context);
@@ -400,11 +418,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                   children: [
                                     SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                                     Text(infoMap['name'] ?? 'Unknown',
-                                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                                        style: TextStyle(fontFamily: '어그로-light', fontSize: 25)),
                                     SizedBox(height: 8),
-                                    Text('학번 : ${infoMap['student_number'] ?? 'Unknown'}'),
+                                    Text('학번 : ${infoMap['student_number'] ?? 'Unknown'}', style: TextStyle(fontFamily: 'NanumSquareRound-regular')),
                                     SizedBox(height: 8),
-                                    Text('학과 : ${infoMap['department'] ?? 'Unknown'}'),
+                                    Text('학과 : ${infoMap['department'] ?? 'Unknown'}', style: TextStyle(fontFamily: 'NanumSquareRound-regular')),
                                     SizedBox(height: 8),
                                   ],
                                 ),
@@ -414,7 +432,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               children: [
                                 OutlinedButton(
                                   onPressed: _viewProfile,
-                                  child: Text('View', style: TextStyle(fontSize: 15)),
+                                  child: Text('View', style: TextStyle(fontFamily: 'NanumSquareRound-bold', fontSize: 15)),
                                   style: OutlinedButton.styleFrom(
                                     minimumSize: Size(MediaQuery.of(context).size.width * 0.27, 30), // Set the width and height here
                                   ),
@@ -422,7 +440,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 SizedBox(width: 8),
                                 OutlinedButton(
                                   onPressed: _editProfile,
-                                  child: Text('Edit', style: TextStyle(fontSize: 15)),
+                                  child: Text('Edit', style: TextStyle(fontFamily: 'NanumSquareRound-bold', fontSize: 15)),
                                   style: OutlinedButton.styleFrom(
                                     minimumSize: Size(MediaQuery.of(context).size.width * 0.27, 30), // Set the width and height here
                                   ),
@@ -539,6 +557,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Text(
                     data['summary']!,
                     style: TextStyle(
+                      fontFamily: 'NanumSquareRound-regular',
                       fontSize: 18,
                       color: Colors.white,
                       decoration: TextDecoration.underline,
@@ -551,7 +570,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: data['url']!)).then((value) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Link copied to clipboard')),
+                      SnackBar(content: Text('Link copied to clipboard', style: TextStyle(fontFamily: 'NanumSquareRound-regular'))),
                     );
                   });
                 },
@@ -606,6 +625,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Text(
                     data['task']!,
                     style: TextStyle(
+                      fontFamily: 'NanumSquareRound-regular',
                       fontSize: 18,
                       color: data['done']! ? Colors.grey : Colors.white,
                       decoration: data['done']! ? TextDecoration.lineThrough : TextDecoration.none,

@@ -31,7 +31,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Camera App'),
+        title: Text('SVG logo')
       ),
       body: TabBarView(
         controller: _tabController,
@@ -50,6 +50,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
         ],
         labelColor: Colors.blue,
         unselectedLabelColor: Colors.grey,
+        labelStyle: TextStyle(fontFamily: 'NanumSquareRound-bold'),  // 선택된 탭의 텍스트 스타일
         indicatorSize: TabBarIndicatorSize.tab,
         indicatorColor: Colors.blue,
       ),

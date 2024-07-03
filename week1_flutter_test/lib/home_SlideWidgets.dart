@@ -178,6 +178,7 @@ class _EditWidgetPopupState extends State<EditWidgetPopup> {
                 child: Text(
                   data['summary']!,
                   style: TextStyle(
+                    fontFamily: 'NanumSquareRound-regular',
                     fontSize: 12,
                     color: Colors.white,
                     decoration: TextDecoration.underline,
@@ -190,7 +191,8 @@ class _EditWidgetPopupState extends State<EditWidgetPopup> {
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: data['url']!)).then((value) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Link copied to clipboard')),
+                      SnackBar(content: Text('Link copied to clipboard', style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
+                      )),
                     );
                   });
                 },
@@ -240,6 +242,7 @@ class _EditWidgetPopupState extends State<EditWidgetPopup> {
                 child: Text(
                   data['task']!,
                   style: TextStyle(
+                    fontFamily: 'NanumSquareRound-regular',
                     fontSize: 12,
                     color: data['done'] ? Colors.grey : Colors.white,
                     decoration: data['done'] ? TextDecoration.lineThrough : TextDecoration.none,
@@ -276,14 +279,18 @@ class _EditWidgetPopupState extends State<EditWidgetPopup> {
                 children: [
                   TextField(
                     controller: urlControllers[index],
-                    decoration: InputDecoration(labelText: 'URL'),
+                    decoration: InputDecoration(labelText: 'URL', labelStyle: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
+              ),
+                    style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
                     onChanged: (value) {
                       _updateLinkData(index, value, summaryControllers[index].text);
                     },
                   ),
                   TextField(
                     controller: summaryControllers[index],
-                    decoration: InputDecoration(labelText: 'Summary'),
+                    decoration: InputDecoration(labelText: 'Summary', labelStyle: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
+              ),
+                    style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
                     onChanged: (value) {
                       _updateLinkData(index, urlControllers[index].text, value);
                     },
@@ -306,16 +313,19 @@ class _EditWidgetPopupState extends State<EditWidgetPopup> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text('Add New Link'),
+                      title: Text('Add New Link', style: TextStyle(fontFamily: 'NanumSquareRound-bold'), // 입력 중인 텍스트의 폰트 스타일
+                      ),
                       content: Column(
                         children: [
                           TextField(
                             controller: urlController,
                             decoration: InputDecoration(labelText: 'URL'),
+                            style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
                           ),
                           TextField(
                             controller: summaryController,
                             decoration: InputDecoration(labelText: 'Summary'),
+                            style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
                           ),
                         ],
                       ),
@@ -325,20 +335,23 @@ class _EditWidgetPopupState extends State<EditWidgetPopup> {
                             _addNewLink(urlController.text, summaryController.text);
                             Navigator.of(context).pop();
                           },
-                          child: Text('Add'),
+                          child: Text('Add', style: TextStyle(fontFamily: 'NanumSquareRound-bold'), // 입력 중인 텍스트의 폰트 스타일
+                          ),
                         ),
                       ],
                     );
                   },
                 );
               },
-              child: Text('Add Link'),
+              child: Text('Add Link', style: TextStyle(fontFamily: 'NanumSquareRound-bold'), // 입력 중인 텍스트의 폰트 스타일
+              ),
             ),
           ],
           if (type == 'Image') ...[
             ElevatedButton(
               onPressed: _pickImage,
-              child: Text('Change Image'),
+              child: Text('Change Image', style: TextStyle(fontFamily: 'NanumSquareRound-bold'), // 입력 중인 텍스트의 폰트 스타일
+              ),
             ),
           ],
           if (type == 'TODO') ...[
@@ -350,7 +363,9 @@ class _EditWidgetPopupState extends State<EditWidgetPopup> {
                 children: [
                   TextField(
                     controller: todoControllers[index],
-                    decoration: InputDecoration(labelText: 'Task'),
+                    decoration: InputDecoration(labelText: 'Task', labelStyle: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
+              ),
+                    style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
                     onChanged: (value) {
                       _updateTodoData(index, value);
                     },
@@ -372,10 +387,13 @@ class _EditWidgetPopupState extends State<EditWidgetPopup> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text('Add New Task'),
+                      title: Text('Add New Task', style: TextStyle(fontFamily: 'NanumSquareRound-bold'), // 입력 중인 텍스트의 폰트 스타일
+                      ),
                       content: TextField(
                         controller: todoController,
-                        decoration: InputDecoration(labelText: 'Task'),
+                        decoration: InputDecoration(labelText: 'Task', labelStyle: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
+                      ),
+                        style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
                       ),
                       actions: [
                         TextButton(
@@ -383,14 +401,16 @@ class _EditWidgetPopupState extends State<EditWidgetPopup> {
                             _addNewTodoTask(todoController.text);
                             Navigator.of(context).pop();
                           },
-                          child: Text('Add'),
+                          child: Text('Add', style: TextStyle(fontFamily: 'NanumSquareRound-bold'), // 입력 중인 텍스트의 폰트 스타일
+                          ),
                         ),
                       ],
                     );
                   },
                 );
               },
-              child: Text('Add Task'),
+              child: Text('Add Task', style: TextStyle(fontFamily: 'NanumSquareRound-bold'), // 입력 중인 텍스트의 폰트 스타일
+              ),
             ),
           ],
           Column(
@@ -431,11 +451,13 @@ class _EditWidgetPopupState extends State<EditWidgetPopup> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text('Cancel'),
+                child: Text('Cancel', style: TextStyle(fontFamily: 'NanumSquareRound-bold'), // 입력 중인 텍스트의 폰트 스타일
+                ),
               ),
               TextButton(
                 onPressed: _saveChanges,
-                child: Text('Save'),
+                child: Text('Save', style: TextStyle(fontFamily: 'NanumSquareRound-bold'), // 입력 중인 텍스트의 폰트 스타일
+                ),
               ),
             ],
           ),
@@ -487,7 +509,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Select a widget to add', style: TextStyle(fontSize: 22)),
+          title: Text('위젯 선택하기', style: TextStyle(fontFamily: '어그로-light', fontSize: 22)),
           content: Container(
             width: width,
             height: height, // Set the height of the container
@@ -553,7 +575,8 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-              title: Text('Link Widget Settings'),
+              title: Text('Link Widget Settings', style: TextStyle(fontFamily: 'NanumSquareRound-bold'), // 입력 중인 텍스트의 폰트 스타일
+              ),
               content: SingleChildScrollView(
                 child: Padding(
                   padding: EdgeInsets.only(
@@ -568,6 +591,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                         decoration: InputDecoration(
                           hintText: 'Enter URL',
                         ),
+                        style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
                       ),
                       SizedBox(height: 16),
                       TextField(
@@ -575,6 +599,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                         decoration: InputDecoration(
                           hintText: 'Enter summary',
                         ),
+                        style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
                       ),
                       SizedBox(height: 16),
                       ElevatedButton(
@@ -591,15 +616,17 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                             });
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Please enter a valid URL and summary')));
+                                SnackBar(content: Text('Please enter a valid URL and summary', style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
+                                )));
                           }
                         },
-                        child: Text('Add Link'),
+                        child: Text('Add Link', style: TextStyle(fontFamily: 'NanumSquareRound-bold'), // 입력 중인 텍스트의 폰트 스타일
+                        ),
                       ),
                       SizedBox(height: 20),
                       Text(
                         'Entered Links:',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(fontFamily: 'NanumSquareRound-bold'),
                       ),
                       SizedBox(
                         width: 200,
@@ -612,7 +639,8 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Expanded(
-                                  child: Text(linkData[index]['summary']!),
+                                  child: Text(linkData[index]['summary']!, style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
+                                  ),
                                 ),
                                 IconButton(
                                   icon: Icon(Icons.delete),
@@ -668,13 +696,15 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                   onPressed: () {
                     Navigator.of(context).pop(false);
                   },
-                  child: Text('Cancel'),
+                  child: Text('Cancel', style: TextStyle(fontFamily: 'NanumSquareRound-bold'), // 입력 중인 텍스트의 폰트 스타일
+                  ),
                 ),
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop(true);
                   },
-                  child: Text('Save'),
+                  child: Text('Save', style: TextStyle(fontFamily: 'NanumSquareRound-bold'), // 입력 중인 텍스트의 폰트 스타일
+                  ),
                 ),
               ],
             );
@@ -706,7 +736,8 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-              title: Text('Image Widget Settings'),
+              title: Text('Image Widget Settings', style: TextStyle(fontFamily: 'NanumSquareRound-bold'), // 입력 중인 텍스트의 폰트 스타일
+              ),
               content: SingleChildScrollView(
                 child: Padding(
                   padding: EdgeInsets.only(
@@ -725,7 +756,8 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                             });
                           }
                         },
-                        child: Text('Pick Image'),
+                        child: Text('Pick Image', style: TextStyle(fontFamily: 'NanumSquareRound-bold'), // 입력 중인 텍스트의 폰트 스타일
+                        ),
                       ),
                       if (imageFile != null) ...[
                         SizedBox(height: 16),
@@ -772,13 +804,15 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                   onPressed: () {
                     Navigator.of(context).pop(false);
                   },
-                  child: Text('Cancel'),
+                  child: Text('Cancel', style: TextStyle(fontFamily: 'NanumSquareRound-bold'), // 입력 중인 텍스트의 폰트 스타일
+                  ),
                 ),
                 TextButton(
                   onPressed: imageFile == null ? null : () {
                     Navigator.of(context).pop(true);
                   },
-                  child: Text('Save'),
+                  child: Text('Save', style: TextStyle(fontFamily: 'NanumSquareRound-bold'), // 입력 중인 텍스트의 폰트 스타일
+                  ),
                 ),
               ],
             );
@@ -810,7 +844,8 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-              title: Text('TODO Widget Settings'),
+              title: Text('TODO Widget Settings', style: TextStyle(fontFamily: 'NanumSquareRound-bold'), // 입력 중인 텍스트의 폰트 스타일
+              ),
               content: SingleChildScrollView(
                 child: Padding(
                   padding: EdgeInsets.only(
@@ -825,6 +860,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                         decoration: InputDecoration(
                           hintText: 'Enter Task',
                         ),
+                        style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
                       ),
                       SizedBox(height: 16),
                       ElevatedButton(
@@ -839,15 +875,17 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                             });
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Please enter a task')));
+                                SnackBar(content: Text('Please enter a task', style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
+                                )));
                           }
                         },
-                        child: Text('Add Task'),
+                        child: Text('Add Task', style: TextStyle(fontFamily: 'NanumSquareRound-bold'), // 입력 중인 텍스트의 폰트 스타일
+                        ),
                       ),
                       SizedBox(height: 20),
                       Text(
                         'Entered Tasks:',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(fontFamily: 'NanumSquareRound-bold'),
                       ),
                       SizedBox(
                         width: 200,
@@ -860,7 +898,8 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Expanded(
-                                  child: Text(todoData[index]['task']),
+                                  child: Text(todoData[index]['task'], style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
+                                  ),
                                 ),
                                 IconButton(
                                   icon: Icon(Icons.delete),
@@ -916,13 +955,15 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                   onPressed: () {
                     Navigator.of(context).pop(false);
                   },
-                  child: Text('Cancel'),
+                  child: Text('Cancel', style: TextStyle(fontFamily: 'NanumSquareRound-bold'), // 입력 중인 텍스트의 폰트 스타일
+                  ),
                 ),
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop(true);
                   },
-                  child: Text('Save'),
+                  child: Text('Save', style: TextStyle(fontFamily: 'NanumSquareRound-bold'), // 입력 중인 텍스트의 폰트 스타일
+                  ),
                 ),
               ],
             );
@@ -959,6 +1000,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
             child: Text(
               data['summary']!,
               style: TextStyle(
+                fontFamily: 'NanumSquareRound-regular',
                 fontSize: 18,
                 color: Colors.white,
                 decoration: TextDecoration.underline,
@@ -1013,6 +1055,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                   child: Text(
                     data['task']!,
                     style: TextStyle(
+                      fontFamily: 'NanumSquareRound-regular',
                       fontSize: 18,
                       color: data['done']! ? Colors.grey : Colors.white,
                       decoration: data['done']! ? TextDecoration.lineThrough : TextDecoration.none,
@@ -1066,6 +1109,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                       child: Text(
                         'sample1',
                         style: TextStyle(
+                          fontFamily: 'NanumSquareRound-regular',
                           fontSize: 12,
                           color: Colors.white,
                           decoration: TextDecoration.underline,
@@ -1089,6 +1133,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                       child: Text(
                         'sample2',
                         style: TextStyle(
+                          fontFamily: 'NanumSquareRound-regular',
                           fontSize: 12,
                           color: Colors.white,
                           decoration: TextDecoration.underline,
@@ -1107,7 +1152,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
           ),
         ),
         SizedBox(height: 5), // Space between preview and label
-        Text("Links", style: TextStyle(fontSize: 14)),
+        Text("Links", style: TextStyle(fontFamily: 'NanumSquareRound-bold', fontSize: 14)),
       ],
     );
   }
@@ -1126,11 +1171,11 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
             color: Colors.blue,
           ),
           child: Center(
-            child: Image.asset("photo/bird.JPG"),
+            child: Image.asset("assets/photo/bird.JPG"),
           ),
         ),
         SizedBox(height: 5), // Space between preview and label
-        Text("Image", style: TextStyle(fontSize: 14)),
+        Text("Image", style: TextStyle(fontFamily: 'NanumSquareRound-bold', fontSize: 14)),
       ],
     );
   }
@@ -1169,6 +1214,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                         child: Text(
                           'Sample Task 1',
                           style: TextStyle(
+                            fontFamily: 'NanumSquareRound-regular',
                             fontSize: 11,
                             color: Colors.white,
                             decoration: TextDecoration.none,
@@ -1191,6 +1237,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
                         child: Text(
                           'Sample Task 1',
                           style: TextStyle(
+                            fontFamily: 'NanumSquareRound-regular',
                             fontSize: 11,
                             color: Colors.white,
                             decoration: TextDecoration.lineThrough,
@@ -1203,7 +1250,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
           ),
         ),
         SizedBox(height: 5), // Space between preview and label
-        Text("TODO", style: TextStyle(fontSize: 14)),
+        Text("TODO", style: TextStyle(fontFamily: 'NanumSquareRound-bold', fontSize: 14)),
       ],
     );
   }
@@ -1212,7 +1259,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Widgets in Grid'),
+        title: Text('위젯', style: TextStyle(fontFamily: '어그로-light')),
         actions: [
           IconButton(
             icon: Icon(Icons.add),

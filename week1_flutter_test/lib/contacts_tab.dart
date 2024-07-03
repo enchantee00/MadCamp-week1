@@ -184,7 +184,7 @@ class _ContactsTabState extends State<ContactsTab> {
   void _showErrorSnackbar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message),
+        content: Text(message, style: TextStyle(fontFamily: 'NanumSquareRound-regular')),
         backgroundColor: Colors.red,
       ),
     );
@@ -201,44 +201,49 @@ class _ContactsTabState extends State<ContactsTab> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Add New Contact'),
+          title: Text('Add New Contact', style: TextStyle(fontFamily: 'NanumSquareRound-bold')),
           content: SingleChildScrollView(
             child: Column(
               children: <Widget>[
                 TextField(
                   controller: givenNameController,
-                  decoration: InputDecoration(labelText: 'Given Name'),
+                  decoration: InputDecoration(labelText: 'Given Name', labelStyle: TextStyle(fontFamily: 'NanumSquareRound-regular')),
+                  style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
                 ),
                 TextField(
                   controller: familyNameController,
-                  decoration: InputDecoration(labelText: 'Family Name'),
+                  decoration: InputDecoration(labelText: 'Family Name', labelStyle: TextStyle(fontFamily: 'NanumSquareRound-regular')),
+                  style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
                 ),
                 TextField(
                   controller: phoneController,
-                  decoration: InputDecoration(labelText: 'Phone'),
+                  decoration: InputDecoration(labelText: 'Phone', labelStyle: TextStyle(fontFamily: 'NanumSquareRound-regular')),
+                  style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
                   keyboardType: TextInputType.phone,
                 ),
                 TextField(
                   controller: emailController,
-                  decoration: InputDecoration(labelText: 'Email'),
+                  decoration: InputDecoration(labelText: 'Email', labelStyle: TextStyle(fontFamily: 'NanumSquareRound-regular')),
+                  style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
                   keyboardType: TextInputType.emailAddress,
                 ),
                 TextField(
                   controller: studentIdController,
-                  decoration: InputDecoration(labelText: 'Student ID'),
+                  decoration: InputDecoration(labelText: 'Student ID', labelStyle: TextStyle(fontFamily: 'NanumSquareRound-regular')),
+                  style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
                 ),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: Text('Cancel', style: TextStyle(fontFamily: 'NanumSquareRound-bold')),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Add'),
+              child: Text('Add', style: TextStyle(fontFamily: 'NanumSquareRound-bold')),
               onPressed: () {
                 Navigator.of(context).pop({
                   'givenName': givenNameController.text,
@@ -271,12 +276,14 @@ class _ContactsTabState extends State<ContactsTab> {
                       controller: searchController,
                       decoration: InputDecoration(
                         labelText: 'Search',
+                        labelStyle: TextStyle(fontFamily: 'NanumSquareRound-bold'),
                         prefixIcon: Icon(Icons.search),
                         contentPadding: EdgeInsets.symmetric(vertical: 10.0), // 텍스트 위치를 위로 조정
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0), // 테두리를 둥글게 만듭니다.
                         ),
                       ),
+                      style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
                     ),
                   ),
                 ),
@@ -295,7 +302,7 @@ class _ContactsTabState extends State<ContactsTab> {
             child: isLoading
                 ? Center(child: CircularProgressIndicator())
                 : filteredContacts.isEmpty
-                ? Center(child: Text('Empty Contacts'))
+                ? Center(child: Text('Empty Contacts', style: TextStyle(fontFamily: 'NanumSquareRound-regular')))
                 : ListView(
               children: _buildContactList(),
             ),
@@ -318,7 +325,7 @@ class _ContactsTabState extends State<ContactsTab> {
           padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
           child: Text(
             currentLetter,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: TextStyle(fontFamily: 'NanumSquareRound-regular', fontSize: 18),
           ),
         ));
       }
@@ -330,11 +337,12 @@ class _ContactsTabState extends State<ContactsTab> {
               : null,
           child: _isValidImage(_convertAvatar(contact.avatar))
               ? null
-              : Text(contact.initials()),
+              : Text(contact.initials(), style: TextStyle(fontFamily: 'NanumSquareRound-regular')),
         ),
-        title: Text(contact.displayName ?? ''),
+        title: Text(contact.displayName ?? '', style: TextStyle(fontFamily: 'NanumSquareRound-regular')),
         subtitle: Text(
           contact.phones!.isNotEmpty ? contact.phones!.first.value! : 'No phone number',
+          style: TextStyle(fontFamily: 'NanumSquareRound-regular')
         ),
         onTap: () async {
           final updatedContact = await Navigator.push(

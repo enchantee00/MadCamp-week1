@@ -65,11 +65,11 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
       });
       widget.onUpdate(widget.contact);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Contact updated successfully')),
+        SnackBar(content: Text('Contact updated successfully', style: TextStyle(fontFamily: 'NanumSquareRound-regular'))),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Permission to access contacts is denied')),
+        SnackBar(content: Text('Permission to access contacts is denied', style: TextStyle(fontFamily: 'NanumSquareRound-regular'))),
       );
     }
   }
@@ -123,16 +123,16 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
         leadingAvatar = CircleAvatar(backgroundImage: MemoryImage(avatar), radius: 50);
       } catch (e) {
         print("Invalid image data for contact ${widget.contact.displayName}: $e");
-        leadingAvatar = CircleAvatar(child: Text(widget.contact.initials()), radius: 50);
+        leadingAvatar = CircleAvatar(child: Text(widget.contact.initials(), style: TextStyle(fontFamily: 'NanumSquareRound-bold')), radius: 50);
       }
     } else {
-      leadingAvatar = CircleAvatar(child: Text(widget.contact.initials()), radius: 50);
+      leadingAvatar = CircleAvatar(child: Text(widget.contact.initials(), style: TextStyle(fontFamily: 'NanumSquareRound-bold')), radius: 50);
     }
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: Text(_isEditing ? 'Edit Contact' : 'Contact Details'),
+        title: Text(_isEditing ? 'Edit Contact' : 'Contact Details', style: TextStyle(fontFamily: '어그로-light')),
         actions: [
           _isEditing
               ? IconButton(
@@ -162,21 +162,24 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
               _isEditing
                   ? TextField(
                 controller: _nameController,
-                decoration: InputDecoration(labelText: 'Name'),
+                decoration: InputDecoration(labelText: 'Name', labelStyle: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
+              ),
                 enabled: false, // 이름 수정 비활성화
               )
-                  : Text('Name: ${widget.contact.displayName ?? 'No Name'}', style: TextStyle(fontSize: 18)),
+                  : Text('Name: ${widget.contact.displayName ?? 'No Name'}', style: TextStyle(fontFamily: 'NanumSquareRound-regular', fontSize: 18)),
               SizedBox(height: 10),
               _isEditing
                   ? TextField(
                 controller: _phoneController,
-                decoration: InputDecoration(labelText: 'Phone'),
+                decoration: InputDecoration(labelText: 'Phone', labelStyle: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
+              ),
+                style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
                 keyboardType: TextInputType.phone,
               )
                   : Row(
                 children: [
                   Expanded(
-                    child: Text('Phone: ${widget.contact.phones?.isNotEmpty == true ? widget.contact.phones!.first.value : 'No Phone'}', style: TextStyle(fontSize: 18)),
+                    child: Text('Phone: ${widget.contact.phones?.isNotEmpty == true ? widget.contact.phones!.first.value : 'No Phone'}', style: TextStyle(fontFamily: 'NanumSquare-regular', fontSize: 18)),
                   ),
                   IconButton(
                     icon: Icon(Icons.phone),
@@ -200,17 +203,22 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> {
               _isEditing
                   ? TextField(
                 controller: _emailController,
-                decoration: InputDecoration(labelText: 'Email'),
+                decoration: InputDecoration(labelText: 'Email', labelStyle: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
+
+              ),
+                style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
                 keyboardType: TextInputType.emailAddress,
               )
-                  : Text('Email: ${widget.contact.emails?.isNotEmpty == true ? widget.contact.emails!.first.value : 'No Email'}', style: TextStyle(fontSize: 18)),
+                  : Text('Email: ${widget.contact.emails?.isNotEmpty == true ? widget.contact.emails!.first.value : 'No Email'}', style: TextStyle(fontFamily: 'NanumSquareRound-regular', fontSize: 18)),
               SizedBox(height: 10),
               _isEditing
                   ? TextField(
                 controller: _studentIdController,
-                decoration: InputDecoration(labelText: 'Student ID'),
+                decoration: InputDecoration(labelText: 'Student ID', labelStyle: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
+              ),
+                style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
               )
-                  : Text('Student ID: ${widget.contact.company ?? 'No Student ID'}', style: TextStyle(fontSize: 18)),
+                  : Text('Student ID: ${widget.contact.company ?? 'No Student ID'}', style: TextStyle(fontFamily: 'NanumSquareRound-regular', fontSize: 18)),
             ],
           ),
         ),
