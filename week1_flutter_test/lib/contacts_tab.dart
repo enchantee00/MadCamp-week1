@@ -173,6 +173,7 @@ class _ContactsTabState extends State<ContactsTab> {
       if (await Permission.contacts.request().isGranted) {
         await ContactsService.addContact(newContact);
         getAllContacts();
+        _showSuccessSnackbar('저장되었습니다');  // 추가된 부분
       }
     }
   }
@@ -186,6 +187,16 @@ class _ContactsTabState extends State<ContactsTab> {
       SnackBar(
         content: Text(message),
         backgroundColor: Colors.red,
+      ),
+    );
+  }
+
+  void _showSuccessSnackbar(String message) {  // 추가된 부분
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 2),  // 스낵바가 2초 동안 표시됨
       ),
     );
   }

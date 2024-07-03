@@ -66,7 +66,6 @@ class CameraService {
     }
   }
 
-
   Future<String?> processImage(String? imagePath) async {
     if (imagePath == null) return null;
 
@@ -74,7 +73,7 @@ class CameraService {
     final imageBase64 = base64Encode(bytes);
 
     final response = await http.post(
-      Uri.parse('http://10.125.68.136:5000/process_image'),
+      Uri.parse('http://143.248.219.163:5000/process_image'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'image': imageBase64}),
     );
@@ -87,7 +86,6 @@ class CameraService {
       return null;
     }
   }
-
 
   void showLoadingDialog(BuildContext context) {
     showDialog(
@@ -127,7 +125,7 @@ class CameraService {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                _showContactEditDialog(context, name, studentId);
+                _checkExistingContacts(context, name, studentId);
               },
               child: Text("확인"),
             ),
@@ -157,11 +155,54 @@ class CameraService {
     );
   }
 
-  Future<void> _showContactEditDialog(BuildContext context, String name, String studentId) async {
+  Future<void> _checkExistingContacts(BuildContext context, String name, String studentId) async {
+    Iterable<Contact> existingContacts = await ContactsService.getContacts(query: name);
+    if (existingContacts.isNotEmpty) {
+      Contact existingContact = existingContacts.first;
+      String existingPhone = existingContact.phones!.isNotEmpty ? existingContact.phones!.first.value! : '없음';
+      String existingEmail = existingContact.emails!.isNotEmpty ? existingContact.emails!.first.value! : '없음';
+      String existingStudentId = existingContact.company ?? '없음';
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("연락처 확인"),
+            content: Text("이미 '$name'라는 이름의 연락처가 있습니다.\n\n"
+                "이름: $name\n"
+                "전화번호: $existingPhone\n"
+                "이메일: $existingEmail\n"
+                "학번: $existingStudentId\n\n"
+                "이 사람이 맞습니까?"),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _showContactEditDialog(context, name, studentId, existingContact: existingContact);
+                },
+                child: Text("맞습니다"),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _showContactEditDialog(context, name, studentId);
+                },
+                child: Text("아닙니다"),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      _showContactEditDialog(context, name, studentId);
+    }
+  }
+
+  Future<void> _showContactEditDialog(BuildContext context, String name, String studentId, {Contact? existingContact}) async {
     TextEditingController nameController = TextEditingController(text: name);
     TextEditingController studentIdController = TextEditingController(text: studentId);
-    TextEditingController phoneController = TextEditingController();
-    TextEditingController emailController = TextEditingController();
+    TextEditingController phoneController = TextEditingController(text: existingContact?.phones?.first.value ?? '');
+    TextEditingController emailController = TextEditingController(text: existingContact?.emails?.first.value ?? '');
 
     showDialog(
       context: context,
@@ -200,14 +241,18 @@ class CameraService {
               },
             ),
             TextButton(
-              child: Text('Save'),
+              child: Text(existingContact == null ? 'Save' : 'Update'),
               onPressed: () {
                 Navigator.of(context).pop();
                 String updatedName = nameController.text;
                 String updatedStudentId = studentIdController.text;
                 String phone = phoneController.text;
                 String email = emailController.text;
-                _addNewContact(updatedName, updatedStudentId, phone, email, context);
+                if (existingContact == null) {
+                  _addNewContact(updatedName, updatedStudentId, phone, email, context);
+                } else {
+                  _updateExistingContact(existingContact, updatedName, updatedStudentId, phone, email, context);
+                }
               },
             ),
           ],
@@ -235,6 +280,18 @@ class CameraService {
     }
   }
 
+  Future<void> _updateExistingContact(Contact contact, String name, String studentId, String phone, String email, BuildContext context) async {
+    contact.displayName = name;
+    contact.company = studentId;
+    contact.phones = [Item(label: 'mobile', value: phone)];
+    contact.emails = [Item(label: 'email', value: email)];
+
+    if (await Permission.contacts.request().isGranted) {
+      await ContactsService.updateContact(contact);
+      _showContactUpdatedDialog(context, name); // 연락처 수정 후 확인 대화상자 표시
+    }
+  }
+
   void _showContactAddedDialog(BuildContext context, String name) {
     showDialog(
       context: context,
@@ -242,6 +299,26 @@ class CameraService {
         return AlertDialog(
           title: Text("Contact Added"),
           content: Text("The contact for $name has been added successfully."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop();
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showContactUpdatedDialog(BuildContext context, String name) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Contact Updated"),
+          content: Text("The contact for $name has been updated successfully."),
           actions: [
             TextButton(
               onPressed: () {
