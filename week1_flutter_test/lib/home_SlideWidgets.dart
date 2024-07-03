@@ -1051,7 +1051,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
           margin: EdgeInsets.all(2.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8.0),
-            color: Colors.orange,
+            color: Color(0xfff19f58),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -1123,7 +1123,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
           height: containerHeight, // Adjusted height
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8.0),
-            color: Colors.blue,
+            color: Color(0xff6194bf),
           ),
           child: Center(
             child: Image.asset("photo/bird.JPG"),
@@ -1146,7 +1146,7 @@ class _WidgetsGridScreenState extends State<WidgetsGridScreen> {
           height: containerHeight, // Adjusted height
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8.0),
-            color: Colors.green,
+            color: Color(0xff81b293),
           ),
           child: Padding(
             padding: const EdgeInsets.all(2.0),
