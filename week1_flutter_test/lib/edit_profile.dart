@@ -182,7 +182,7 @@ class _ProfileViewPageState extends State<ProfileViewPage> {
             SizedBox(height: 30),
             Center(
               child: Text(widget.infos['name'] ?? 'Unknown',
-                  style: TextStyle(fontSize: 40, style: TextStyle(fontFamily: 'NanumSquareRound-regular')),
+                  style: TextStyle(fontSize: 40, fontFamily: 'NanumSquareRound-regular')),
             ),
             SizedBox(height: 15),
             Center(

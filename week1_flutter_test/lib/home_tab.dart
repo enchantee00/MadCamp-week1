@@ -204,7 +204,7 @@ class _MyHomePageState extends State<MyHomePage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("Error", style: TextStyle(fontFamily: 'NanumSquareRound-regular')),
-          content: Text(message),
+          content: Text(message, style: TextStyle(fontFamily: 'NanumSquareRound-regular')),
           actions: [
             TextButton(
               onPressed: () {
@@ -442,11 +442,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children : [SizedBox(height:MediaQuery.of(context).size.height*0.04),
                                             Text(infoMap['name'] ?? 'Unknown',
-                                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                                                style: TextStyle(fontFamily: '어그로-light', fontSize: 20)),
                                             SizedBox(height: 8),
-                                            Text('학번 : ${infoMap['student_number'] ?? 'Unknown'}'),
+                                            Text('학번 : ${infoMap['student_number'] ?? 'Unknown'}', style: TextStyle(fontFamily: 'NanumSquareRound-regular')),
                                             SizedBox(height: 8),
-                                            Text('학과 : ${infoMap['department'] ?? 'Unknown'}'),
+                                            Text('학과 : ${infoMap['department'] ?? 'Unknown'}', style: TextStyle(fontFamily: 'NanumSquareRound-regular')),
                                             SizedBox(height: 8),]
                                         ),
                                       ]
@@ -455,7 +455,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     children: [
                                       OutlinedButton(
                                         onPressed: _viewProfile,
-                                        child: Text('View',style: TextStyle(fontSize: 15),),
+                                        child: Text('View',style: TextStyle(fontFamily: 'NanumSquareRound-bold', fontSize: 15)),
                                         style: OutlinedButton.styleFrom(
                                           minimumSize: Size(MediaQuery.of(context).size.width*0.22, 25), // Set the width and height here
                                         ),
@@ -463,7 +463,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       SizedBox(width: 8),
                                       OutlinedButton(
                                         onPressed: _editProfile,
-                                        child: Text('Edit',style: TextStyle(fontSize: 15),),
+                                        child: Text('Edit',style: TextStyle(fontFamily: 'NanumSquareRound-bold', fontSize: 15),),
                                         style: OutlinedButton.styleFrom(
                                           minimumSize: Size(MediaQuery.of(context).size.width*0.22, 25), // Set the width and height here
                                         ),
