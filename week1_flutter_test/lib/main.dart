@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
      // title: null,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: const Color(0xfffdfdfd),
       ),
       home: SplashScreen(cameras: cameras), // 스플래시 스크린으로 변경
     );

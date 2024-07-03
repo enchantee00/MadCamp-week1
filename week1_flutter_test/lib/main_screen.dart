@@ -31,8 +31,9 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xfff6f6f6),
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -54,13 +55,13 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
       ),
       bottomNavigationBar: Container(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Color(0xffffffff),
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(15),topRight: Radius.circular(15)),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 5,
-                    blurRadius: 7,
+                    spreadRadius: 8,
+                    blurRadius: 10,
                     offset: Offset(0, 3), // changes position of shadow
                   ),
                 ],
