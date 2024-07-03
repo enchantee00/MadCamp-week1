@@ -62,7 +62,17 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('profileInfo', json.encode(widget.infos));
 
-    Navigator.pop(context, widget.infos); // 업데이트된 정보를 HomePage로 반환
+    // "저장되었습니다" 메시지 표시
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('저장되었습니다'),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 2),
+      ),
+    );
+
+    // 업데이트된 정보를 반환
+    Navigator.pop(context, widget.infos); // 업데이트된 정보를 반환하고 프로필 편집 페이지를 닫지 않습니다.
   }
 
   @override
@@ -168,14 +178,17 @@ class _ProfileViewPageState extends State<ProfileViewPage> {
             ),
             SizedBox(height: 30),
             Center(
-              child: Text(widget.infos['name'] ?? 'Unknown', style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
+              child: Text(widget.infos['name'] ?? 'Unknown',
+                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
             ),
             SizedBox(height: 15),
             Center(
-              child: Text(widget.infos['student_number'] ?? 'Unknown', style: TextStyle(fontSize: 25)),
+              child: Text(widget.infos['student_number'] ?? 'Unknown',
+                  style: TextStyle(fontSize: 25)),
             ),
             Center(
-              child: Text(widget.infos['department'] ?? 'Unknown', style: TextStyle(fontSize: 25)),
+              child: Text(widget.infos['department'] ?? 'Unknown',
+                  style: TextStyle(fontSize: 25)),
             ),
           ],
         ),
