@@ -79,7 +79,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Profile'),
+        title: Text('Edit Profile', style: TextStyle(fontFamily: '어그로-light')),
         actions: [
           IconButton(
             icon: Icon(Icons.save),
@@ -108,16 +108,19 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
               TextField(
                 controller: nameController,
                 decoration: InputDecoration(labelText: 'Name'),
+                style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
               ),
               SizedBox(height: 16),
               TextField(
                 controller: studentNumberController,
                 decoration: InputDecoration(labelText: 'Student Number'),
+                style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
               ),
               SizedBox(height: 16),
               TextField(
                 controller: departmentController,
                 decoration: InputDecoration(labelText: 'Department'),
+                style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
               ),
             ],
           ),
@@ -161,7 +164,7 @@ class _ProfileViewPageState extends State<ProfileViewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(''),
+        title: Text('', style: TextStyle(fontFamily: '어그로-light')),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -179,16 +182,16 @@ class _ProfileViewPageState extends State<ProfileViewPage> {
             SizedBox(height: 30),
             Center(
               child: Text(widget.infos['name'] ?? 'Unknown',
-                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
+                  style: TextStyle(fontSize: 40, style: TextStyle(fontFamily: 'NanumSquareRound-regular')),
             ),
             SizedBox(height: 15),
             Center(
               child: Text(widget.infos['student_number'] ?? 'Unknown',
-                  style: TextStyle(fontSize: 25)),
+                  style: TextStyle(fontSize: 25, fontFamily: 'NanumSquareRound-regular')),
             ),
             Center(
               child: Text(widget.infos['department'] ?? 'Unknown',
-                  style: TextStyle(fontSize: 25)),
+                  style: TextStyle(fontSize: 25, fontFamily: 'NanumSquareRound-regular')),
             ),
           ],
         ),

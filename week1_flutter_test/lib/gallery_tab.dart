@@ -143,7 +143,7 @@ class GalleryTabState extends State<GalleryTab> {
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       date,
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontFamily: 'NanumSquareRound-bold', fontSize: 16),
                     ),
                   ),
                   GridView.builder(
@@ -217,7 +217,7 @@ class GalleryTabState extends State<GalleryTab> {
                       padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                       minimumSize: Size(50, 30), // 최소 크기 설정
                     ),
-                    child: Text('Delete', style: TextStyle(fontSize: 10, color: Colors.white)),
+                    child: Text('Delete', style: TextStyle(fontFamily: '어그로-light', fontSize: 10, color: Colors.white)),
                   ),
                 SizedBox(width: 8),
                 ElevatedButton(
@@ -227,7 +227,7 @@ class GalleryTabState extends State<GalleryTab> {
                     padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                     minimumSize: Size(50, 30), // 최소 크기 설정
                   ),
-                  child: Text('Load', style: TextStyle(fontSize: 10, color: Colors.white)),
+                  child: Text('Load', style: TextStyle(fontFamily: '어그로-light', fontSize: 10, color: Colors.white)),
                 ),
               ],
             ),

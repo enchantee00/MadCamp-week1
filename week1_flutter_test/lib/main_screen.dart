@@ -75,6 +75,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                 ],
                 labelColor: Color(0xffa0c6c2),
                 unselectedLabelColor: Color(0xff415250),
+                labelStyle: TextStyle(fontFamily: 'NanumSquareRound-bold'),  // 선택된 탭의 텍스트 스타일
                 indicatorSize: TabBarIndicatorSize.tab,
                 indicatorColor: Colors.blue,
               )

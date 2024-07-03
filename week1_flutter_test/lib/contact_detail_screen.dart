@@ -96,11 +96,11 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> with WidgetsB
       });
       widget.onUpdate(widget.contact);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Contact updated successfully')),
+        SnackBar(content: Text('Contact updated successfully', style: TextStyle(fontFamily: 'NanumSquareRound-regular'))),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Permission to access contacts is denied')),
+        SnackBar(content: Text('Permission to access contacts is denied', style: TextStyle(fontFamily: 'NanumSquareRound-regular'))),
       );
     }
   }
@@ -169,10 +169,10 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> with WidgetsB
         leadingAvatar = CircleAvatar(backgroundImage: MemoryImage(avatar), radius: 50);
       } catch (e) {
         print("Invalid image data for contact ${widget.contact.displayName}: $e");
-        leadingAvatar = CircleAvatar(child: Text(widget.contact.initials()), radius: 50);
+        leadingAvatar = CircleAvatar(child: Text(widget.contact.initials(), style: TextStyle(fontFamily: 'NanumSquareRound-bold')), radius: 50);
       }
     } else {
-      leadingAvatar = CircleAvatar(child: Text(widget.contact.initials()), radius: 50);
+      leadingAvatar = CircleAvatar(child: Text(widget.contact.initials(), style: TextStyle(fontFamily: 'NanumSquareRound-bold')), radius: 50);
     }
 
     bool hasPhone = widget.contact.phones?.isNotEmpty == true;
@@ -185,7 +185,7 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> with WidgetsB
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
-          title: Text(_isEditing ? 'Edit Contact' : 'Contact Details'),
+          title: Text(_isEditing ? 'Edit Contact' : 'Contact Details', style: TextStyle(fontFamily: '어그로-light')),
           actions: [
             _isEditing
                 ? IconButton(

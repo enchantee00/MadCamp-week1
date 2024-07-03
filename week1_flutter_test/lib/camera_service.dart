@@ -97,7 +97,7 @@ class CameraService {
             children: [
               CircularProgressIndicator(),
               SizedBox(width: 20),
-              Text("로딩 중..."),
+              Text("로딩 중...", style: TextStyle(fontFamily: 'NanumSquareRound-regular')),
             ],
           ),
         );
@@ -113,21 +113,22 @@ class CameraService {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("OCR 결과 확인"),
-          content: Text("이름: ${name.isEmpty ? '알 수 없음' : name}\n학번: ${studentId.isEmpty ? '알 수 없음' : studentId}\n\n정보가 맞습니까?"),
+          title: Text("OCR 결과 확인", style: TextStyle(fontFamily: 'NanumSquareRound-bold')),
+          content: Text("이름: ${name.isEmpty ? '알 수 없음' : name}\n학번: ${studentId.isEmpty ? '알 수 없음' : studentId}\n\n정보가 맞습니까?",
+              style: TextStyle(fontFamily: 'NanumSquareRound-regular')),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("취소"),
+              child: Text("취소", style: TextStyle(fontFamily: 'NanumSquareRound-bold')),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 _checkExistingContacts(context, name, studentId);
               },
-              child: Text("확인"),
+              child: Text("확인", style: TextStyle(fontFamily: 'NanumSquareRound-bold')),
             ),
           ],
         );
@@ -140,14 +141,14 @@ class CameraService {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Error"),
+          title: Text("Error", style: TextStyle(fontFamily: 'NanumSquareRound-bold')),
           content: Text(message),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context, rootNavigator: true).pop();
               },
-              child: Text("확인"),
+              child: Text("확인", style: TextStyle(fontFamily: 'NanumSquareRound-bold')),
             ),
           ],
         );
@@ -208,26 +209,30 @@ class CameraService {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Edit Contact Info'),
+          title: Text('Edit Contact Info', style: TextStyle(fontFamily: 'NanumSquareRound-bold')),
           content: SingleChildScrollView(
             child: Column(
               children: <Widget>[
                 TextField(
                   controller: nameController,
-                  decoration: InputDecoration(labelText: 'Name'),
+                  decoration: InputDecoration(labelText: 'Name', labelStyle: TextStyle(fontFamily: 'NanumSquareRound-regular')),
+                  style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
                 ),
                 TextField(
                   controller: studentIdController,
-                  decoration: InputDecoration(labelText: 'Student ID'),
+                  decoration: InputDecoration(labelText: 'Student ID', labelStyle: TextStyle(fontFamily: 'NanumSquareRound-regular')),
+                  style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일=
                 ),
                 TextField(
                   controller: phoneController,
-                  decoration: InputDecoration(labelText: 'Phone'),
+                  decoration: InputDecoration(labelText: 'Phone', labelStyle: TextStyle(fontFamily: 'NanumSquareRound-regular')),
+                  style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
                   keyboardType: TextInputType.phone,
                 ),
                 TextField(
                   controller: emailController,
-                  decoration: InputDecoration(labelText: 'Email'),
+                  decoration: InputDecoration(labelText: 'Email', labelStyle: TextStyle(fontFamily: 'NanumSquareRound-regular')),
+                  style: TextStyle(fontFamily: 'NanumSquareRound-regular'), // 입력 중인 텍스트의 폰트 스타일
                   keyboardType: TextInputType.emailAddress,
                 ),
               ],
@@ -235,13 +240,13 @@ class CameraService {
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: Text('Cancel', style: TextStyle(fontFamily: 'NanumSquareRound-bold')),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text(existingContact == null ? 'Save' : 'Update'),
+              child: Text(existingContact == null ? 'Save' : 'Update', style: TextStyle(fontFamily: 'NanumSquareRound-bold')),
               onPressed: () {
                 Navigator.of(context).pop();
                 String updatedName = nameController.text;
@@ -297,14 +302,14 @@ class CameraService {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Contact Added"),
-          content: Text("The contact for $name has been added successfully."),
+          title: Text("Contact Added", style: TextStyle(fontFamily: 'NanumSquareRound-bold')),
+          content: Text("The contact for $name has been added successfully.", style: TextStyle(fontFamily: 'NanumSquareRound-regular')),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context, rootNavigator: true).pop();
               },
-              child: Text("OK"),
+              child: Text("OK", style: TextStyle(fontFamily: 'NanumSquareRound-bold')),
             ),
           ],
         );
