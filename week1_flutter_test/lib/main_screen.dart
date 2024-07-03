@@ -39,7 +39,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
           children: [
             SizedBox(width: 10.0,),
             SvgPicture.asset(
-              'photo/UNiV_logo.svg', // Your SVG logo file path
+              'assets/photo/UNiV_logo.svg', // Your SVG logo file path
               height: 30,
             ),
           ],
