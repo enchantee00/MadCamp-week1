@@ -183,8 +183,10 @@ class _ContactDetailScreenState extends State<ContactDetailScreen> with WidgetsB
         FocusScope.of(context).unfocus(); // 키보드를 닫습니다.
       },
       child: Scaffold(
+        backgroundColor: Color(0xfff6f6f6),
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
+          backgroundColor: Color(0xfff6f6f6),
           title: Text(_isEditing ? 'Edit Contact' : 'Contact Details', style: TextStyle(fontFamily: '어그로-light')),
           actions: [
             _isEditing

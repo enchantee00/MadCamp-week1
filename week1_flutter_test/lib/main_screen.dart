@@ -54,6 +54,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
         ],
       ),
       bottomNavigationBar: Container(
+        padding: EdgeInsets.only(bottom: 5),
               decoration: BoxDecoration(
                 color: Color(0xffffffff),
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(15),topRight: Radius.circular(15)),
@@ -77,7 +78,11 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
                 unselectedLabelColor: Color(0xff415250),
                 labelStyle: TextStyle(fontFamily: 'NanumSquareRound-bold'),  // 선택된 탭의 텍스트 스타일
                 indicatorSize: TabBarIndicatorSize.tab,
-                indicatorColor: Colors.blue,
+                indicator: UnderlineTabIndicator(
+                  borderSide: BorderSide(color: Color(0xffa0c6c2), width: 2.0),
+                  insets: EdgeInsets.symmetric(horizontal: 20.0), // Adjust the length of the indicator
+                ),
+                indicatorPadding: EdgeInsets.only(bottom: 0),
               )
         ,)
     );

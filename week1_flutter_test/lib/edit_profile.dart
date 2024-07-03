@@ -78,7 +78,9 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xfff6f6f6),
       appBar: AppBar(
+        backgroundColor: Color(0xfff6f6f6),
         title: Text('Edit Profile', style: TextStyle(fontFamily: '어그로-light')),
         actions: [
           IconButton(
@@ -163,7 +165,9 @@ class _ProfileViewPageState extends State<ProfileViewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xfff6f6f6),
       appBar: AppBar(
+        backgroundColor: Color(0xfff6f6f6),
         title: Text('', style: TextStyle(fontFamily: '어그로-light')),
       ),
       body: Padding(

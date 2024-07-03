@@ -18,7 +18,7 @@
 
     <application
         android:requestLegacyExternalStorage="true"
-        android:label="week1_flutter_test"
+        android:label="UNiV"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:enableOnBackInvokedCallback="true"
