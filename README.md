@@ -1,5 +1,5 @@
 # MadCamp-week1
-몰입캠프 1주차 과제입니다.
+몰입캠프 1주차 산출물입니다.
 
 
 ### 개요
@@ -10,7 +10,7 @@
 </div>
 
 
-### 학교생활 종합도우미, UNiV를 소개합니다.
+### 학교 생활 종합도우미, UNiV를 소개합니다.
 
 UNiV는 대학생들의 학교생활을 도와주는 앱입니다.
 
@@ -37,7 +37,7 @@ UNiV를 이용해보세요!
 
 |      정지윤       |          조영서         |          한종국         |                                                                                                               
 | :------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------: |
-|   <img width="160px" src="https://github.com/enchantee00/MadCamp-week1/assets/62553866/67b24f11-2c48-4704-ac34-6c3be41c9982" />    |                      <img width="160px" src="https://github.com/enchantee00/MadCamp-week1/assets/62553866/ac1b51dc-f570-4056-84a4-c9bf5125f6f8" />    |                      <img width="160px" src="https://github.com/enchantee00/MadCamp-week1/assets/62553866/550c5a73-982d-449e-90d9-21f548f51456" />    |
+|   <img width="30%" src="https://github.com/enchantee00/MadCamp-week1/assets/62553866/67b24f11-2c48-4704-ac34-6c3be41c9982" />    |                      <img width="30%" src="https://github.com/enchantee00/MadCamp-week1/assets/62553866/ac1b51dc-f570-4056-84a4-c9bf5125f6f8" />    |                      <img width="30%" src="https://github.com/enchantee00/MadCamp-week1/assets/62553866/550c5a73-982d-449e-90d9-21f548f51456" />    |
 |   [@enchantee00](https://github.com/enchantee00)   |    [@cyshello](https://github.com/cyshello)  |    [@jkookhan03](https://github.com/jkookhan03)  |
 | 부산대학교 정보컴퓨터공학부 3학년 | 카이스트 전산학부 2학년 | 카이스트 전산학부 3학년 |
 
